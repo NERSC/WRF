@@ -98,6 +98,735 @@
       end subroutine init_temp_arrays
 
       end module temp_arrays
+
+!      [[[cog
+!         from wrf_cog import *
+!         write_module("onecond3.csv", "onecond3_temp", ["nkr", "icemax"])
+!      ]]]
+    module onecond3_temp
+    implicit none
+    logical, private :: firstcall = .true.
+
+
+    REAL, allocatable, target :: FI1_temp(:,:,:,:)
+    real, allocatable, target :: B11_MY_temp(:,:,:,:)
+    real, allocatable, target :: B12_MY_temp(:,:,:,:)
+    REAL, allocatable, target :: FI2_temp(:,:,:,:,:)
+    real, allocatable, target :: B21_MY_temp(:,:,:,:,:)
+    real, allocatable, target :: B22_MY_temp(:,:,:,:,:)
+    real, allocatable, target :: RATE2_temp(:,:,:,:,:)
+    real, allocatable, target :: DEL_R2M_temp(:,:,:,:,:)
+    REAL, allocatable, target :: FI3_temp(:,:,:,:)
+    real, allocatable, target :: B31_MY_temp(:,:,:,:)
+    real, allocatable, target :: B32_MY_temp(:,:,:,:)
+    real, allocatable, target :: DEL_R3M_temp(:,:,:,:)
+    REAL, allocatable, target :: FI4_temp(:,:,:,:)
+    real, allocatable, target :: B41_MY_temp(:,:,:,:)
+    real, allocatable, target :: B42_MY_temp(:,:,:,:)
+    real, allocatable, target :: DEL_R4M_temp(:,:,:,:)
+    REAL, allocatable, target :: FI5_temp(:,:,:,:)
+    real, allocatable, target :: B51_MY_temp(:,:,:,:)
+    real, allocatable, target :: B52_MY_temp(:,:,:,:)
+    real, allocatable, target :: DEL_R5M_temp(:,:,:,:)
+    real, allocatable, target :: SFNI1_temp(:,:,:,:)
+    real, allocatable, target :: SFNI2_temp(:,:,:,:)
+    REAL, allocatable, target :: DTIMEG_temp(:,:,:,:)
+    real, allocatable, target :: DTIMEH_temp(:,:,:,:)
+    REAL, allocatable, target :: DEL2D_temp(:,:,:,:)
+    real, allocatable, target :: DTIMEO_temp(:,:,:,:)
+    real, allocatable, target :: DTIMEL_temp(:,:,:,:)
+    real, allocatable, target :: DTIMEI_1_temp(:,:,:,:)
+    real, allocatable, target :: DTIMEI_2_temp(:,:,:,:)
+    real, allocatable, target :: DTIMEI_3_temp(:,:,:,:)
+    REAL, allocatable, target :: TIMESTEPD_temp(:,:,:,:)
+    REAL, allocatable, target :: FL1_temp(:,:,:,:)
+    real, allocatable, target :: FL2_temp(:,:,:,:,:)
+    real, allocatable, target :: FL3_temp(:,:,:,:)
+    real, allocatable, target :: FL4_temp(:,:,:,:)
+    real, allocatable, target :: FL5_temp(:,:,:,:)
+    real, allocatable, target :: SFNDUMMY_temp(:,:,:,:)
+    real, allocatable, target :: R1N_temp(:,:,:,:)
+    real, allocatable, target :: R2N_temp(:,:,:,:,:)
+    real, allocatable, target :: R3N_temp(:,:,:,:)
+    real, allocatable, target :: R4N_temp(:,:,:,:)
+    real, allocatable, target :: R5N_temp(:,:,:,:)
+    real(8), allocatable, target :: R1D_temp(:,:,:,:)
+    real(8), allocatable, target :: R2D_temp(:,:,:,:,:)
+    real(8), allocatable, target :: R3D_temp(:,:,:,:)
+    real(8), allocatable, target :: R4D_temp(:,:,:,:)
+    real(8), allocatable, target :: R5D_temp(:,:,:,:)
+    real(8), allocatable, target :: R1ND_temp(:,:,:,:)
+    real(8), allocatable, target :: R2ND_temp(:,:,:,:,:)
+    real(8), allocatable, target :: R3ND_temp(:,:,:,:)
+    real(8), allocatable, target :: R4ND_temp(:,:,:,:)
+    real(8), allocatable, target :: R5ND_temp(:,:,:,:)
+    real(8), allocatable, target :: VR1_d_temp(:,:,:,:)
+    real(8), allocatable, target :: VR2_d_temp(:,:,:,:,:)
+    real(8), allocatable, target :: VR3_d_temp(:,:,:,:)
+    real(8), allocatable, target :: VR4_d_temp(:,:,:,:)
+    real(8), allocatable, target :: VR5_d_temp(:,:,:,:)
+    real(4), allocatable, target :: fr_lim_temp(:,:,:,:)
+    real(4), allocatable, target :: frh_lim_temp(:,:,:,:)
+
+
+    !$omp declare target(FI1_temp)
+    !$omp declare target(B11_MY_temp)
+    !$omp declare target(B12_MY_temp)
+    !$omp declare target(FI2_temp)
+    !$omp declare target(B21_MY_temp)
+    !$omp declare target(B22_MY_temp)
+    !$omp declare target(RATE2_temp)
+    !$omp declare target(DEL_R2M_temp)
+    !$omp declare target(FI3_temp)
+    !$omp declare target(B31_MY_temp)
+    !$omp declare target(B32_MY_temp)
+    !$omp declare target(DEL_R3M_temp)
+    !$omp declare target(FI4_temp)
+    !$omp declare target(B41_MY_temp)
+    !$omp declare target(B42_MY_temp)
+    !$omp declare target(DEL_R4M_temp)
+    !$omp declare target(FI5_temp)
+    !$omp declare target(B51_MY_temp)
+    !$omp declare target(B52_MY_temp)
+    !$omp declare target(DEL_R5M_temp)
+    !$omp declare target(SFNI1_temp)
+    !$omp declare target(SFNI2_temp)
+    !$omp declare target(DTIMEG_temp)
+    !$omp declare target(DTIMEH_temp)
+    !$omp declare target(DEL2D_temp)
+    !$omp declare target(DTIMEO_temp)
+    !$omp declare target(DTIMEL_temp)
+    !$omp declare target(DTIMEI_1_temp)
+    !$omp declare target(DTIMEI_2_temp)
+    !$omp declare target(DTIMEI_3_temp)
+    !$omp declare target(TIMESTEPD_temp)
+    !$omp declare target(FL1_temp)
+    !$omp declare target(FL2_temp)
+    !$omp declare target(FL3_temp)
+    !$omp declare target(FL4_temp)
+    !$omp declare target(FL5_temp)
+    !$omp declare target(SFNDUMMY_temp)
+    !$omp declare target(R1N_temp)
+    !$omp declare target(R2N_temp)
+    !$omp declare target(R3N_temp)
+    !$omp declare target(R4N_temp)
+    !$omp declare target(R5N_temp)
+    !$omp declare target(R1D_temp)
+    !$omp declare target(R2D_temp)
+    !$omp declare target(R3D_temp)
+    !$omp declare target(R4D_temp)
+    !$omp declare target(R5D_temp)
+    !$omp declare target(R1ND_temp)
+    !$omp declare target(R2ND_temp)
+    !$omp declare target(R3ND_temp)
+    !$omp declare target(R4ND_temp)
+    !$omp declare target(R5ND_temp)
+    !$omp declare target(VR1_d_temp)
+    !$omp declare target(VR2_d_temp)
+    !$omp declare target(VR3_d_temp)
+    !$omp declare target(VR4_d_temp)
+    !$omp declare target(VR5_d_temp)
+    !$omp declare target(fr_lim_temp)
+    !$omp declare target(frh_lim_temp)
+		contains
+
+    subroutine init_onecond3_temp(its,ite,kts,kte,jts,jte,nkr,icemax)
+    implicit none
+    integer, intent(in) :: its,ite,kts,kte,jts,jte,nkr,icemax
+    if (firstcall) then
+    firstcall = .false.
+
+
+    allocate( FI1_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( B11_MY_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( B12_MY_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( FI2_temp(NKR,ICEMAX,its:ite,kts:kte,jts:jte) )
+    allocate( B21_MY_temp(NKR,ICEMAX,its:ite,kts:kte,jts:jte) )
+    allocate( B22_MY_temp(NKR,ICEMAX,its:ite,kts:kte,jts:jte) )
+    allocate( RATE2_temp(NKR,ICEMAX,its:ite,kts:kte,jts:jte) )
+    allocate( DEL_R2M_temp(NKR,ICEMAX,its:ite,kts:kte,jts:jte) )
+    allocate( FI3_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( B31_MY_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( B32_MY_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( DEL_R3M_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( FI4_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( B41_MY_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( B42_MY_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( DEL_R4M_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( FI5_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( B51_MY_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( B52_MY_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( DEL_R5M_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( SFNI1_temp(ICEMAX,its:ite,kts:kte,jts:jte) )
+    allocate( SFNI2_temp(ICEMAX,its:ite,kts:kte,jts:jte) )
+    allocate( DTIMEG_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( DTIMEH_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( DEL2D_temp(ICEMAX,its:ite,kts:kte,jts:jte) )
+    allocate( DTIMEO_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( DTIMEL_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( DTIMEI_1_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( DTIMEI_2_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( DTIMEI_3_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( TIMESTEPD_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( FL1_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( FL2_temp(NKR,ICEMAX,its:ite,kts:kte,jts:jte) )
+    allocate( FL3_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( FL4_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( FL5_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( SFNDUMMY_temp(3,its:ite,kts:kte,jts:jte) )
+    allocate( R1N_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( R2N_temp(NKR,ICEMAX,its:ite,kts:kte,jts:jte) )
+    allocate( R3N_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( R4N_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( R5N_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( R1D_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( R2D_temp(NKR,ICEMAX,its:ite,kts:kte,jts:jte) )
+    allocate( R3D_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( R4D_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( R5D_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( R1ND_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( R2ND_temp(NKR,ICEMAX,its:ite,kts:kte,jts:jte) )
+    allocate( R3ND_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( R4ND_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( R5ND_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( VR1_d_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( VR2_d_temp(NKR,ICEMAX,its:ite,kts:kte,jts:jte) )
+    allocate( VR3_d_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( VR4_d_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( VR5_d_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( fr_lim_temp(nkr,its:ite,kts:kte,jts:jte) )
+    allocate( frh_lim_temp(nkr,its:ite,kts:kte,jts:jte) )
+
+
+    !$omp target enter data map(alloc: FI1_temp)
+    !$omp target enter data map(alloc: B11_MY_temp)
+    !$omp target enter data map(alloc: B12_MY_temp)
+    !$omp target enter data map(alloc: FI2_temp)
+    !$omp target enter data map(alloc: B21_MY_temp)
+    !$omp target enter data map(alloc: B22_MY_temp)
+    !$omp target enter data map(alloc: RATE2_temp)
+    !$omp target enter data map(alloc: DEL_R2M_temp)
+    !$omp target enter data map(alloc: FI3_temp)
+    !$omp target enter data map(alloc: B31_MY_temp)
+    !$omp target enter data map(alloc: B32_MY_temp)
+    !$omp target enter data map(alloc: DEL_R3M_temp)
+    !$omp target enter data map(alloc: FI4_temp)
+    !$omp target enter data map(alloc: B41_MY_temp)
+    !$omp target enter data map(alloc: B42_MY_temp)
+    !$omp target enter data map(alloc: DEL_R4M_temp)
+    !$omp target enter data map(alloc: FI5_temp)
+    !$omp target enter data map(alloc: B51_MY_temp)
+    !$omp target enter data map(alloc: B52_MY_temp)
+    !$omp target enter data map(alloc: DEL_R5M_temp)
+    !$omp target enter data map(alloc: SFNI1_temp)
+    !$omp target enter data map(alloc: SFNI2_temp)
+    !$omp target enter data map(alloc: DTIMEG_temp)
+    !$omp target enter data map(alloc: DTIMEH_temp)
+    !$omp target enter data map(alloc: DEL2D_temp)
+    !$omp target enter data map(alloc: DTIMEO_temp)
+    !$omp target enter data map(alloc: DTIMEL_temp)
+    !$omp target enter data map(alloc: DTIMEI_1_temp)
+    !$omp target enter data map(alloc: DTIMEI_2_temp)
+    !$omp target enter data map(alloc: DTIMEI_3_temp)
+    !$omp target enter data map(alloc: TIMESTEPD_temp)
+    !$omp target enter data map(alloc: FL1_temp)
+    !$omp target enter data map(alloc: FL2_temp)
+    !$omp target enter data map(alloc: FL3_temp)
+    !$omp target enter data map(alloc: FL4_temp)
+    !$omp target enter data map(alloc: FL5_temp)
+    !$omp target enter data map(alloc: SFNDUMMY_temp)
+    !$omp target enter data map(alloc: R1N_temp)
+    !$omp target enter data map(alloc: R2N_temp)
+    !$omp target enter data map(alloc: R3N_temp)
+    !$omp target enter data map(alloc: R4N_temp)
+    !$omp target enter data map(alloc: R5N_temp)
+    !$omp target enter data map(alloc: R1D_temp)
+    !$omp target enter data map(alloc: R2D_temp)
+    !$omp target enter data map(alloc: R3D_temp)
+    !$omp target enter data map(alloc: R4D_temp)
+    !$omp target enter data map(alloc: R5D_temp)
+    !$omp target enter data map(alloc: R1ND_temp)
+    !$omp target enter data map(alloc: R2ND_temp)
+    !$omp target enter data map(alloc: R3ND_temp)
+    !$omp target enter data map(alloc: R4ND_temp)
+    !$omp target enter data map(alloc: R5ND_temp)
+    !$omp target enter data map(alloc: VR1_d_temp)
+    !$omp target enter data map(alloc: VR2_d_temp)
+    !$omp target enter data map(alloc: VR3_d_temp)
+    !$omp target enter data map(alloc: VR4_d_temp)
+    !$omp target enter data map(alloc: VR5_d_temp)
+    !$omp target enter data map(alloc: fr_lim_temp)
+    !$omp target enter data map(alloc: frh_lim_temp)
+
+
+    endif
+    end subroutine init_onecond3_temp
+    end module onecond3_temp
+!     [[[end]]]
+    module onecond2_temp
+    implicit none
+    logical, private :: firstcall = .true.
+
+
+    REAL, allocatable, target :: FI2_temp(:,:,:,:,:)
+    real, allocatable, target :: B21_MY_temp(:,:,:,:,:)
+    real, allocatable, target :: B22_MY_temp(:,:,:,:,:)
+    REAL, allocatable, target :: FI3_temp(:,:,:,:)
+    real, allocatable, target :: B31_MY_temp(:,:,:,:)
+    real, allocatable, target :: B32_MY_temp(:,:,:,:)
+    REAL, allocatable, target :: FI4_temp(:,:,:,:)
+    real, allocatable, target :: B41_MY_temp(:,:,:,:)
+    real, allocatable, target :: B42_MY_temp(:,:,:,:)
+    REAL, allocatable, target :: FI5_temp(:,:,:,:)
+    real, allocatable, target :: B51_MY_temp(:,:,:,:)
+    real, allocatable, target :: B52_MY_temp(:,:,:,:)
+    REAL, allocatable, target :: DTIMEG_temp(:,:,:,:)
+    real, allocatable, target :: DTIMEH_temp(:,:,:,:)
+    REAL, allocatable, target :: DEL2D_temp(:,:,:,:)
+    real, allocatable, target :: DTIMEO_temp(:,:,:,:)
+    real, allocatable, target :: DTIMEL_temp(:,:,:,:)
+    real, allocatable, target :: DTIMEI_1_temp(:,:,:,:)
+    real, allocatable, target :: DTIMEI_2_temp(:,:,:,:)
+    real, allocatable, target :: DTIMEI_3_temp(:,:,:,:)
+    real, allocatable, target :: SFNI1_temp(:,:,:,:)
+    real, allocatable, target :: SFNI2_temp(:,:,:,:)
+    real, allocatable, target :: TIMESTEPD_temp(:,:,:,:)
+    real, allocatable, target :: FI1REF_temp(:,:,:,:)
+    real, allocatable, target :: PSI1REF_temp(:,:,:,:)
+    real, allocatable, target :: FI2REF_temp(:,:,:,:,:)
+    real, allocatable, target :: PSI2REF_temp(:,:,:,:,:)
+    real, allocatable, target :: FCCNRREF_temp(:,:,:,:)
+    REAL, allocatable, target :: FL1_temp(:,:,:,:)
+    real, allocatable, target :: FL3_temp(:,:,:,:)
+    real, allocatable, target :: FL4_temp(:,:,:,:)
+    real, allocatable, target :: FL5_temp(:,:,:,:)
+    real, allocatable, target :: R2N_temp(:,:,:,:,:)
+    real, allocatable, target :: R3N_temp(:,:,:,:)
+    real, allocatable, target :: R4N_temp(:,:,:,:)
+    real, allocatable, target :: R5N_temp(:,:,:,:)
+    real(8), allocatable, target :: R2D_temp(:,:,:,:,:)
+    real(8), allocatable, target :: R3D_temp(:,:,:,:)
+    real(8), allocatable, target :: R4D_temp(:,:,:,:)
+    real(8), allocatable, target :: R5D_temp(:,:,:,:)
+    real(8), allocatable, target :: R2ND_temp(:,:,:,:,:)
+    real(8), allocatable, target :: R3ND_temp(:,:,:,:)
+    real(8), allocatable, target :: R4ND_temp(:,:,:,:)
+    real(8), allocatable, target :: R5ND_temp(:,:,:,:)
+    real(8), allocatable, target :: VR2_d_temp(:,:,:,:,:)
+    real(8), allocatable, target :: VR3_d_temp(:,:,:,:)
+    real(8), allocatable, target :: VR4_d_temp(:,:,:,:)
+    real(8), allocatable, target :: VR5_d_temp(:,:,:,:)
+    real(4), allocatable, target :: fr_lim_temp(:,:,:,:)
+    real(4), allocatable, target :: frh_lim_temp(:,:,:,:)
+
+
+    !$omp declare target(FI2_temp)
+    !$omp declare target(B21_MY_temp)
+    !$omp declare target(B22_MY_temp)
+    !$omp declare target(FI3_temp)
+    !$omp declare target(B31_MY_temp)
+    !$omp declare target(B32_MY_temp)
+    !$omp declare target(FI4_temp)
+    !$omp declare target(B41_MY_temp)
+    !$omp declare target(B42_MY_temp)
+    !$omp declare target(FI5_temp)
+    !$omp declare target(B51_MY_temp)
+    !$omp declare target(B52_MY_temp)
+    !$omp declare target(DTIMEG_temp)
+    !$omp declare target(DTIMEH_temp)
+    !$omp declare target(DEL2D_temp)
+    !$omp declare target(DTIMEO_temp)
+    !$omp declare target(DTIMEL_temp)
+    !$omp declare target(DTIMEI_1_temp)
+    !$omp declare target(DTIMEI_2_temp)
+    !$omp declare target(DTIMEI_3_temp)
+    !$omp declare target(SFNI1_temp)
+    !$omp declare target(SFNI2_temp)
+    !$omp declare target(TIMESTEPD_temp)
+    !$omp declare target(FI1REF_temp)
+    !$omp declare target(PSI1REF_temp)
+    !$omp declare target(FI2REF_temp)
+    !$omp declare target(PSI2REF_temp)
+    !$omp declare target(FCCNRREF_temp)
+    !$omp declare target(FL1_temp)
+    !$omp declare target(FL3_temp)
+    !$omp declare target(FL4_temp)
+    !$omp declare target(FL5_temp)
+    !$omp declare target(R2N_temp)
+    !$omp declare target(R3N_temp)
+    !$omp declare target(R4N_temp)
+    !$omp declare target(R5N_temp)
+    !$omp declare target(R2D_temp)
+    !$omp declare target(R3D_temp)
+    !$omp declare target(R4D_temp)
+    !$omp declare target(R5D_temp)
+    !$omp declare target(R2ND_temp)
+    !$omp declare target(R3ND_temp)
+    !$omp declare target(R4ND_temp)
+    !$omp declare target(R5ND_temp)
+    !$omp declare target(VR2_d_temp)
+    !$omp declare target(VR3_d_temp)
+    !$omp declare target(VR4_d_temp)
+    !$omp declare target(VR5_d_temp)
+    !$omp declare target(fr_lim_temp)
+    !$omp declare target(frh_lim_temp)
+		contains
+
+    subroutine init_onecond2_temp(its,ite,kts,kte,jts,jte,nkr,icemax)
+    implicit none
+    integer, intent(in) :: its,ite,kts,kte,jts,jte,nkr,icemax
+    if (firstcall) then
+    firstcall = .false.
+
+
+    allocate( FI2_temp(NKR,ICEMAX,its:ite,kts:kte,jts:jte) )
+    allocate( B21_MY_temp(NKR,ICEMAX,its:ite,kts:kte,jts:jte) )
+    allocate( B22_MY_temp(NKR,ICEMAX,its:ite,kts:kte,jts:jte) )
+    allocate( FI3_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( B31_MY_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( B32_MY_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( FI4_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( B41_MY_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( B42_MY_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( FI5_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( B51_MY_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( B52_MY_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( DTIMEG_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( DTIMEH_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( DEL2D_temp(ICEMAX,its:ite,kts:kte,jts:jte) )
+    allocate( DTIMEO_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( DTIMEL_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( DTIMEI_1_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( DTIMEI_2_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( DTIMEI_3_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( SFNI1_temp(ICEMAX,its:ite,kts:kte,jts:jte) )
+    allocate( SFNI2_temp(ICEMAX,its:ite,kts:kte,jts:jte) )
+    allocate( TIMESTEPD_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( FI1REF_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( PSI1REF_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( FI2REF_temp(NKR,ICEMAX,its:ite,kts:kte,jts:jte) )
+    allocate( PSI2REF_temp(NKR,ICEMAX,its:ite,kts:kte,jts:jte) )
+    allocate( FCCNRREF_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( FL1_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( FL3_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( FL4_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( FL5_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( R2N_temp(NKR,ICEMAX,its:ite,kts:kte,jts:jte) )
+    allocate( R3N_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( R4N_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( R5N_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( R2D_temp(NKR,ICEMAX,its:ite,kts:kte,jts:jte) )
+    allocate( R3D_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( R4D_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( R5D_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( R2ND_temp(NKR,ICEMAX,its:ite,kts:kte,jts:jte) )
+    allocate( R3ND_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( R4ND_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( R5ND_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( VR2_d_temp(NKR,ICEMAX,its:ite,kts:kte,jts:jte) )
+    allocate( VR3_d_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( VR4_d_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( VR5_d_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( fr_lim_temp(nkr,its:ite,kts:kte,jts:jte) )
+    allocate( frh_lim_temp(nkr,its:ite,kts:kte,jts:jte) )
+
+
+    !$omp target enter data map(alloc: FI2_temp)
+    !$omp target enter data map(alloc: B21_MY_temp)
+    !$omp target enter data map(alloc: B22_MY_temp)
+    !$omp target enter data map(alloc: FI3_temp)
+    !$omp target enter data map(alloc: B31_MY_temp)
+    !$omp target enter data map(alloc: B32_MY_temp)
+    !$omp target enter data map(alloc: FI4_temp)
+    !$omp target enter data map(alloc: B41_MY_temp)
+    !$omp target enter data map(alloc: B42_MY_temp)
+    !$omp target enter data map(alloc: FI5_temp)
+    !$omp target enter data map(alloc: B51_MY_temp)
+    !$omp target enter data map(alloc: B52_MY_temp)
+    !$omp target enter data map(alloc: DTIMEG_temp)
+    !$omp target enter data map(alloc: DTIMEH_temp)
+    !$omp target enter data map(alloc: DEL2D_temp)
+    !$omp target enter data map(alloc: DTIMEO_temp)
+    !$omp target enter data map(alloc: DTIMEL_temp)
+    !$omp target enter data map(alloc: DTIMEI_1_temp)
+    !$omp target enter data map(alloc: DTIMEI_2_temp)
+    !$omp target enter data map(alloc: DTIMEI_3_temp)
+    !$omp target enter data map(alloc: SFNI1_temp)
+    !$omp target enter data map(alloc: SFNI2_temp)
+    !$omp target enter data map(alloc: TIMESTEPD_temp)
+    !$omp target enter data map(alloc: FI1REF_temp)
+    !$omp target enter data map(alloc: PSI1REF_temp)
+    !$omp target enter data map(alloc: FI2REF_temp)
+    !$omp target enter data map(alloc: PSI2REF_temp)
+    !$omp target enter data map(alloc: FCCNRREF_temp)
+    !$omp target enter data map(alloc: FL1_temp)
+    !$omp target enter data map(alloc: FL3_temp)
+    !$omp target enter data map(alloc: FL4_temp)
+    !$omp target enter data map(alloc: FL5_temp)
+    !$omp target enter data map(alloc: R2N_temp)
+    !$omp target enter data map(alloc: R3N_temp)
+    !$omp target enter data map(alloc: R4N_temp)
+    !$omp target enter data map(alloc: R5N_temp)
+    !$omp target enter data map(alloc: R2D_temp)
+    !$omp target enter data map(alloc: R3D_temp)
+    !$omp target enter data map(alloc: R4D_temp)
+    !$omp target enter data map(alloc: R5D_temp)
+    !$omp target enter data map(alloc: R2ND_temp)
+    !$omp target enter data map(alloc: R3ND_temp)
+    !$omp target enter data map(alloc: R4ND_temp)
+    !$omp target enter data map(alloc: R5ND_temp)
+    !$omp target enter data map(alloc: VR2_d_temp)
+    !$omp target enter data map(alloc: VR3_d_temp)
+    !$omp target enter data map(alloc: VR4_d_temp)
+    !$omp target enter data map(alloc: VR5_d_temp)
+    !$omp target enter data map(alloc: fr_lim_temp)
+    !$omp target enter data map(alloc: frh_lim_temp)
+
+
+    endif
+    end subroutine init_onecond2_temp
+    end module onecond2_temp
+    module jernucl_temp
+    implicit none
+    logical, private :: firstcall = .true.
+
+
+    real(8), allocatable, target :: dropconcn_temp(:,:,:,:)
+    real(8), allocatable, target :: fi2_temp(:,:,:,:,:)
+    real(8), allocatable, target :: psi1_temp(:,:,:,:)
+    real(8), allocatable, target :: psi2_temp(:,:,:,:,:)
+    real(8), allocatable, target :: fccnr_temp(:,:,:,:)
+    real(8), allocatable, target :: xl_temp(:,:,:,:)
+    real(8), allocatable, target :: xi_temp(:,:,:,:,:)
+    real(8), allocatable, target :: rccn_temp(:,:,:,:)
+    real(8), allocatable, target :: dropradii_temp(:,:,:,:)
+
+
+    !$omp declare target(dropconcn_temp)
+    !$omp declare target(fi2_temp)
+    !$omp declare target(psi1_temp)
+    !$omp declare target(psi2_temp)
+    !$omp declare target(fccnr_temp)
+    !$omp declare target(xl_temp)
+    !$omp declare target(xi_temp)
+    !$omp declare target(rccn_temp)
+    !$omp declare target(dropradii_temp)
+		contains
+
+    subroutine init_jernucl_temp(its,ite,kts,kte,jts,jte,nkr,icemax,nkr_aerosol)
+    implicit none
+    integer, intent(in) :: its,ite,kts,kte,jts,jte,nkr,icemax,nkr_aerosol
+    if (firstcall) then
+    firstcall = .false.
+
+
+    allocate( dropconcn_temp(nkr,its:ite,kts:kte,jts:jte) )
+    allocate( fi2_temp(nkr,icemax,its:ite,kts:kte,jts:jte) )
+    allocate( psi1_temp(nkr,its:ite,kts:kte,jts:jte) )
+    allocate( psi2_temp(nkr,icemax,its:ite,kts:kte,jts:jte) )
+    allocate( fccnr_temp(nkr_aerosol,its:ite,kts:kte,jts:jte) )
+    allocate( xl_temp(nkr,its:ite,kts:kte,jts:jte) )
+    allocate( xi_temp(nkr,icemax,its:ite,kts:kte,jts:jte) )
+    allocate( rccn_temp(nkr_aerosol,its:ite,kts:kte,jts:jte) )
+    allocate( dropradii_temp(nkr,its:ite,kts:kte,jts:jte) )
+
+
+    !$omp target enter data map(alloc: dropconcn_temp)
+    !$omp target enter data map(alloc: fi2_temp)
+    !$omp target enter data map(alloc: psi1_temp)
+    !$omp target enter data map(alloc: psi2_temp)
+    !$omp target enter data map(alloc: fccnr_temp)
+    !$omp target enter data map(alloc: xl_temp)
+    !$omp target enter data map(alloc: xi_temp)
+    !$omp target enter data map(alloc: rccn_temp)
+    !$omp target enter data map(alloc: dropradii_temp)
+
+
+    endif
+    end subroutine init_jernucl_temp
+    end module jernucl_temp
+    module jerrate_ks_temp
+    implicit none
+    logical, private :: firstcall = .true.
+
+
+    integer, allocatable, target :: nskin_temp(:,:,:,:)
+    real(4), allocatable, target :: VENTPLM_temp(:,:,:,:)
+    real(4), allocatable, target :: FD1_temp(:,:,:,:,:)
+    real(4), allocatable, target :: FK1_temp(:,:,:,:,:)
+    real(4), allocatable, target :: xl_MY1_temp(:,:,:,:,:)
+    real(4), allocatable, target :: al1_my_temp(:,:,:,:)
+    real(4), allocatable, target :: esat1_temp(:,:,:,:)
+
+
+    !$omp declare target(nskin_temp)
+    !$omp declare target(VENTPLM_temp)
+    !$omp declare target(FD1_temp)
+    !$omp declare target(FK1_temp)
+    !$omp declare target(xl_MY1_temp)
+    !$omp declare target(al1_my_temp)
+    !$omp declare target(esat1_temp)
+		contains
+
+    subroutine init_jerrate_ks_temp(its,ite,kts,kte,jts,jte,nkr,icemax)
+    implicit none
+    integer, intent(in) :: its,ite,kts,kte,jts,jte,nkr,icemax
+    if (firstcall) then
+    firstcall = .false.
+
+
+    allocate( nskin_temp(nkr,its:ite,kts:kte,jts:jte) )
+    allocate( VENTPLM_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( FD1_temp(NKR,ICEMAX,its:ite,kts:kte,jts:jte) )
+    allocate( FK1_temp(NKR,ICEMAX,its:ite,kts:kte,jts:jte) )
+    allocate( xl_MY1_temp(NKR,ICEMAX,its:ite,kts:kte,jts:jte) )
+    allocate( al1_my_temp(2,its:ite,kts:kte,jts:jte) )
+    allocate( esat1_temp(2,its:ite,kts:kte,jts:jte) )
+
+
+    !$omp target enter data map(alloc: nskin_temp)
+    !$omp target enter data map(alloc: VENTPLM_temp)
+    !$omp target enter data map(alloc: FD1_temp)
+    !$omp target enter data map(alloc: FK1_temp)
+    !$omp target enter data map(alloc: xl_MY1_temp)
+    !$omp target enter data map(alloc: al1_my_temp)
+    !$omp target enter data map(alloc: esat1_temp)
+
+
+    endif
+    end subroutine init_jerrate_ks_temp
+    end module jerrate_ks_temp
+    module jerdfun_ks_temp
+    implicit none
+    logical, private :: firstcall = .true.
+
+
+    REAL(8), allocatable, target :: FL2_NEW_temp(:,:,:,:)
+    real(8), allocatable, target :: FI2R_temp(:,:,:,:)
+    real(8), allocatable, target :: PSI2R_temp(:,:,:,:)
+    real(8), allocatable, target :: xiR_temp(:,:,:,:)
+    real(8), allocatable, target :: xiNR_temp(:,:,:,:)
+
+
+    !$omp declare target(FL2_NEW_temp)
+    !$omp declare target(FI2R_temp)
+    !$omp declare target(PSI2R_temp)
+    !$omp declare target(xiR_temp)
+    !$omp declare target(xiNR_temp)
+		contains
+
+    subroutine init_jerdfun_ks_temp(its,ite,kts,kte,jts,jte,nkr)
+    implicit none
+    integer, intent(in) :: its,ite,kts,kte,jts,jte,nkr
+    if (firstcall) then
+    firstcall = .false.
+
+
+    allocate( FL2_NEW_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( FI2R_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( PSI2R_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( xiR_temp(NKR,its:ite,kts:kte,jts:jte) )
+    allocate( xiNR_temp(NKR,its:ite,kts:kte,jts:jte) )
+
+
+    !$omp target enter data map(alloc: FL2_NEW_temp)
+    !$omp target enter data map(alloc: FI2R_temp)
+    !$omp target enter data map(alloc: PSI2R_temp)
+    !$omp target enter data map(alloc: xiR_temp)
+    !$omp target enter data map(alloc: xiNR_temp)
+
+
+    endif
+    end subroutine init_jerdfun_ks_temp
+    end module jerdfun_ks_temp
+
+    module onecond1_temp
+    implicit none
+    logical, private :: firstcall = .true.
+
+
+    real, allocatable, target :: ff1_old_temp(:,:,:,:)
+    real, allocatable, target :: supintw_temp(:,:,:,:)
+    real(8), allocatable, target :: dsupintw_temp(:,:,:,:)
+    real, allocatable, target :: fi1_temp(:,:,:,:)
+    real, allocatable, target :: b11_my_temp(:,:,:,:)
+    real, allocatable, target :: b12_my_temp(:,:,:,:)
+    real, allocatable, target :: dtimeo_temp(:,:,:,:)
+    real, allocatable, target :: dtimel_temp(:,:,:,:)
+    real, allocatable, target :: timestepd_temp(:,:,:,:)
+    real, allocatable, target :: fl1_temp(:,:,:,:)
+    real, allocatable, target :: r1n_temp(:,:,:,:)
+    real(8), allocatable, target :: r1d_temp(:,:,:,:)
+    real(8), allocatable, target :: r1nd_temp(:,:,:,:)
+    real(8), allocatable, target :: vr1_d_temp(:,:,:,:)
+    real(4), allocatable, target :: fr_lim_temp(:,:,:,:)
+    real(4), allocatable, target :: frh_lim_temp(:,:,:,:)
+
+
+    !$omp declare target(ff1_old_temp)
+    !$omp declare target(supintw_temp)
+    !$omp declare target(dsupintw_temp)
+    !$omp declare target(fi1_temp)
+    !$omp declare target(b11_my_temp)
+    !$omp declare target(b12_my_temp)
+    !$omp declare target(dtimeo_temp)
+    !$omp declare target(dtimel_temp)
+    !$omp declare target(timestepd_temp)
+    !$omp declare target(fl1_temp)
+    !$omp declare target(r1n_temp)
+    !$omp declare target(r1d_temp)
+    !$omp declare target(r1nd_temp)
+    !$omp declare target(vr1_d_temp)
+    !$omp declare target(fr_lim_temp)
+    !$omp declare target(frh_lim_temp)
+		contains
+
+    subroutine init_onecond1_temp(its,ite,kts,kte,jts,jte,nkr)
+    implicit none
+    integer, intent(in) :: its,ite,kts,kte,jts,jte,nkr
+    if (firstcall) then
+    firstcall = .false.
+
+
+    allocate( ff1_old_temp(nkr,its:ite,kts:kte,jts:jte) )
+    allocate( supintw_temp(nkr,its:ite,kts:kte,jts:jte) )
+    allocate( dsupintw_temp(nkr,its:ite,kts:kte,jts:jte) )
+    allocate( fi1_temp(nkr,its:ite,kts:kte,jts:jte) )
+    allocate( b11_my_temp(nkr,its:ite,kts:kte,jts:jte) )
+    allocate( b12_my_temp(nkr,its:ite,kts:kte,jts:jte) )
+    allocate( dtimeo_temp(nkr,its:ite,kts:kte,jts:jte) )
+    allocate( dtimel_temp(nkr,its:ite,kts:kte,jts:jte) )
+    allocate( timestepd_temp(nkr,its:ite,kts:kte,jts:jte) )
+    allocate( fl1_temp(nkr,its:ite,kts:kte,jts:jte) )
+    allocate( r1n_temp(nkr,its:ite,kts:kte,jts:jte) )
+    allocate( r1d_temp(nkr,its:ite,kts:kte,jts:jte) )
+    allocate( r1nd_temp(nkr,its:ite,kts:kte,jts:jte) )
+    allocate( vr1_d_temp(nkr,its:ite,kts:kte,jts:jte) )
+    allocate( fr_lim_temp(nkr,its:ite,kts:kte,jts:jte) )
+    allocate( frh_lim_temp(nkr,its:ite,kts:kte,jts:jte) )
+
+
+    !$omp target enter data map(alloc: ff1_old_temp)
+    !$omp target enter data map(alloc: supintw_temp)
+    !$omp target enter data map(alloc: dsupintw_temp)
+    !$omp target enter data map(alloc: fi1_temp)
+    !$omp target enter data map(alloc: b11_my_temp)
+    !$omp target enter data map(alloc: b12_my_temp)
+    !$omp target enter data map(alloc: dtimeo_temp)
+    !$omp target enter data map(alloc: dtimel_temp)
+    !$omp target enter data map(alloc: timestepd_temp)
+    !$omp target enter data map(alloc: fl1_temp)
+    !$omp target enter data map(alloc: r1n_temp)
+    !$omp target enter data map(alloc: r1d_temp)
+    !$omp target enter data map(alloc: r1nd_temp)
+    !$omp target enter data map(alloc: vr1_d_temp)
+    !$omp target enter data map(alloc: fr_lim_temp)
+    !$omp target enter data map(alloc: frh_lim_temp)
+
+
+    endif
+    end subroutine init_onecond1_temp
+    end module onecond1_temp
 ! +-----------------------------------------------------------------------------+
 ! +-----------------------------------------------------------------------------+
 
@@ -576,19 +1305,20 @@ end module module_mp_SBM_BreakUp
         						        TP,PP, &
 						                Vxl,RIEC,RO1BL, &
 						                B11_MY, &
-						                ID,IN,fl1,NKR,ICEMAX)
+						                ID,IN,fl1,NKR,ICEMAX,Iin,Kin,Jin)
 
+            use jerrate_ks_temp
 		IMPLICIT NONE
 ! ... Interface
-		INTEGER,INTENT(IN) :: ID, IN, NKR, ICEMAX
+		INTEGER,INTENT(IN) :: ID, IN, NKR, ICEMAX, Iin, Kin, Jin
 		REAL(KIND=r4size),INTENT(IN) :: RO1BL(NKR,ID),RIEC(NKR,ID),FL1(NKR)
 		REAL(KIND=r4size),INTENT(INOUT) :: B11_MY(NKR,ID)
 		REAL(KIND=r8size),INTENT(IN) :: PP, TP, xlS(NKR,ID),Vxl(NKR,ID)
 ! ... Interface
 ! ... Locals
-		INTEGER :: KR, nskin(nkr), ICE
-		REAL(KIND=r4size) :: VENTPLM(NKR), FD1(NKR,ICEMAX),FK1(NKR,ICEMAX), xl_MY1(NKR,ICEMAX), &
-        		              AL1_MY(2),ESAT1(2), TPreal
+		INTEGER :: KR, ICE
+		REAL(KIND=r4size) :: &
+        		               TPreal
 		REAL(KIND=r8size) :: PZERO, TZERO, CONST, D_MY, COEFF_VISCOUS, SHMIDT_NUMBER,     &
 							           A, B, RVT, SHMIDT_NUMBER03, XLS_KR_ICE, RO1BL_KR_ICE, VXL_KR_ICE, REINOLDS_NUMBER, &
 							           RESHM, VENTPL, CONSTL, DETL
@@ -597,7 +1327,24 @@ end module module_mp_SBM_BreakUp
 
 ! A1L_MY - CONSTANTS FOR "MAXWELL": MKS
 		REAL(KIND=r8size),parameter:: RV_MY=461.5D4, CF_MY=2.4D3, D_MYIN=0.211D0
+!$omp declare target
 
+integer, pointer :: nskin(:)
+real(4), pointer :: VENTPLM(:)
+real(4), pointer :: FD1(:,:)
+real(4), pointer :: FK1(:,:)
+real(4), pointer :: xl_MY1(:,:)
+real(4), pointer :: al1_my(:)
+real(4), pointer :: esat1(:)
+
+
+nskin => nskin_temp(:,Iin,Kin,Jin)
+VENTPLM => VENTPLM_temp(:,Iin,Kin,Jin)
+FD1 => FD1_temp(:,:,Iin,Kin,Jin)
+FK1 => FK1_temp(:,:,Iin,Kin,Jin)
+xl_MY1 => xl_MY1_temp(:,:,Iin,Kin,Jin)
+al1_my => al1_my_temp(:,Iin,Kin,Jin)
+esat1 => esat1_temp(:,Iin,Kin,Jin)
 ! CGS :
 
 ! RV_MY, CM*CM/SEC/SEC/KELVIN - INDIVIDUAL GAS CONSTANT
@@ -770,6 +1517,7 @@ enddo
 	REAL(KIND=r4size) :: SFN11S, FK, DELM, FUN, B11
 ! ... Locals
 
+      !$omp declare target
 	DO ICE=1,ID
      SFN11S=0.0D0
  	   SFN11(ICE)=CF*SFN11S
@@ -793,6 +1541,16 @@ enddo
 
 	RETURN
 	END SUBROUTINE JERTIMESC_KS
+
+pure real(kind=r8size) function expm1(x)
+      real(kind=r8size), intent(in) :: x
+
+      !$omp declare target
+		EXPM1=x+x*x/2.0D0+x*x*x/6.0D0+x*x*x*x/24.0D0+ x*x*x*x*x/120.0D0
+end function expm1
+
+
+
 ! +--------------------------------------------------------+
 	SUBROUTINE JERSUPSAT_KS (DEL1,DEL2,DEL1N,DEL2N, &
 			                     RW,PW,RI,PI, &
@@ -808,15 +1566,13 @@ enddo
 ! ... Interface
 ! ... Locals
 	   INTEGER :: I, ISYMICE, IRW, IPW, IRI, IPI
-	   REAL(KIND=r8size) :: X, EXPM1, DETER, EXPR, EXPP, A, ALFA, BETA, GAMA, G31, G32, G2, EXPB, EXPG, &
+	   REAL(KIND=r8size) :: X,  DETER, EXPR, EXPP, A, ALFA, BETA, GAMA, G31, G32, G2, EXPB, EXPG, &
 	   				  C11, C21, C12, C22, A1DEL1N, A2DEL1N, A3DEL1N, A4DEL1N, A1DEL1INT, A2DEL1INT, &
 							A3DEL1INT, A4DEL1INT, A1DEL2N, A2DEL2N, A3DEL2N , A4DEL2N, A1DEL2INT, A2DEL2INT, &
 							A3DEL2INT, A4DEL2INT, A5DEL2INT
 ! ... Locals
 
-		EXPM1(x)=x+x*x/2.0D0+x*x*x/6.0D0+x*x*x*x/24.0D0+ &
-                 x*x*x*x*x/120.0D0
-
+!$omp declare target
   ISYMICE = sum(ISYM2) + ISYM3 + ISYM4 + ISYM5
   IRW = 1
   IPW = 1
@@ -984,6 +1740,7 @@ enddo
       A=(RW-PI)*(RW-PI)+4.0E0*PW*RI
 
 	     IF(A < 0.0) THEN
+#ifndef OFFLOAD
 	          PRINT*,   'IN SUBROUTINE JERSUPSAT: A < 0'
             PRINT*,   'DETER'
             PRINT 201, DETER
@@ -995,6 +1752,7 @@ enddo
             PRINT 202, DEL1,DEL2
 	          PRINT*,   'STOP 1905:A < 0'
 	          call wrf_error_fatal("fatal error: STOP 1905:A < 0, model stop")
+#endif
        ENDIF
 ! ... water and ice                                               (start)
        ALFA=DSQRT((RW-PI)*(RW-PI)+4.0D0*PW*RI)
@@ -1152,10 +1910,12 @@ enddo
 
  100    CONTINUE
 
+#ifndef OFFLOAD
   201	FORMAT(1X,D13.5)
   202	FORMAT(1X,2D13.5)
   203	FORMAT(1X,3D13.5)
   204	FORMAT(1X,4D13.5)
+#endif
 
         RETURN
         END SUBROUTINE JERSUPSAT_KS
@@ -1167,6 +1927,7 @@ enddo
         					       ISYM2,IND,ITYPE,TPN,IDROP, &
         					       FR_LIM,FRH_LIM,ICEMAX,NKR,COL,Ihydro,Iin,Jin,Kin,Itimestep)
 
+    use jerdfun_ks_temp
 	IMPLICIT NONE
 ! ... Interface
 	INTEGER,INTENT(IN) :: ISYM2, IND, ITYPE, NKR, ICEMAX, Ihydro, Iin, Jin ,Kin, Itimestep
@@ -1180,11 +1941,24 @@ enddo
 
 ! ... Locals
 	INTEGER :: ITYP, KR, NR, ICE, K, IDSD_Negative
-	REAL(kind=R8SIZE) :: FL2_NEW(NKR), FI2R(NKR), PSI2R(NKR), C, DEGREE1, DEGREE2, DEGREE3, D, RATEXI, &
-						           B, A, xiR(NKR),xiNR(NKR), FR_LIM_KR
+	REAL(kind=R8SIZE) :: C, DEGREE1, DEGREE2, DEGREE3, D, RATEXI, &
+						           B, A,  FR_LIM_KR
 ! ... Locals
 
 
+!$omp declare target
+       REAL(8), pointer :: FL2_NEW(:)
+       real(8), pointer :: FI2R(:)
+       real(8), pointer :: PSI2R(:)
+       real(8), pointer :: xiR(:)
+       real(8), pointer :: xiNR(:)
+
+
+       FL2_NEW => FL2_NEW_temp(:,Iin,Kin,Jin)
+       FI2R    => FI2R_temp(:,Iin,Kin,Jin)
+       PSI2R   => PSI2R_temp(:,Iin,Kin,Jin)
+       xiR     => xiR_temp(:,Iin,Kin,Jin)
+       xiNR    => xiNR_temp(:,Iin,Kin,Jin)
 	C = 2.0D0/3.0D0
 
 	DEGREE1 = 1.0D0/3.0D0
@@ -1255,8 +2029,10 @@ enddo
 		      			FR_LIM_KR=FR_LIM(KR)
 					ENDIF
 		  		IF(PSI2R(KR)<0.0D0) THEN
+#ifndef OFFLOAD
 					  PRINT*,    'STOP 1506 : PSI2R(KR)<0.0D0, in JERDFUN_KS'
 						call wrf_error_fatal("fatal error in PSI2R(KR)<0.0D0, in JERDFUN_KS, model stop")
+#endif
 			  	ENDIF
     	  	PSI2(KR) = PSI2R(KR)
    	 ENDDO
@@ -1266,8 +2042,10 @@ enddo
 	ENDIF
 ! new size distribution functions                               (end)
 
+#ifndef OFFLOAD
   201	FORMAT(1X,D13.5)
   304   FORMAT(1X,I2,2X,4D13.5)
+#endif
 
 	RETURN
 	END SUBROUTINE JERDFUN_KS
@@ -1295,7 +2073,7 @@ enddo
 
 		INTEGER,PARAMETER :: KRDROP_REMAPING_MIN = 6, KRDROP_REMAPING_MAX = 12
 ! ... Locals
-
+!$omp declare target
 ! >> [KS] 22ndMay19	IF(TPN .LT. 273.15-5.0D0) IDROP=0
 
 ! INITIAL VALUES FOR SOME VARIABLES
@@ -1564,6 +2342,7 @@ enddo
 
 		DO KR=1,NRX
 	   		IF(PSI(KR) < 0.0) THEN ! ... (KS)
+#ifndef OFFLOAD
 					IDSD_Negative = 1
 					print*, "IDSD_Negative=",IDSD_Negative,"kr",kr
 					PRINT*,    'IN SUBROUTINE JERNEWF'
@@ -1579,10 +2358,13 @@ enddo
 					PRINT 304, (K,RR(K),RN(K),FI(K),PSI(K),K=1,NRX)
 					PRINT*,		IDROP,Ihydro,Iin,Jin,Kin,Itimestep
           call wrf_error_fatal("fatal error in SUBROUTINE JERNEWF PSI(KR)<0, < min, model stop")
+#endif
 			ENDIF
 		ENDDO
 
+#ifndef OFFLOAD
   304   FORMAT(1X,I2,2X,4D13.5)
+#endif
 
         RETURN
         END SUBROUTINE JERNEWF_KS
@@ -1592,11 +2374,12 @@ enddo
         			FI2,PSI2, &
         			TPN,IDROP,FR_LIM,NKR,COL,Ihydro,Iin,Jin,Kin,Itimestep)
 
+        use jerdfun_ks_temp, only : xir_temp, fi2r_temp, psi2r_temp, xinr_temp
 	IMPLICIT NONE
 
 ! ... Interface
-	INTEGER,INTENT(INOUT) :: IDROP, NKR
-	INTEGER,INTENT(IN) :: Ihydro,Iin,Jin,Kin,Itimestep
+	INTEGER,INTENT(INOUT) :: IDROP
+	INTEGER,INTENT(IN) :: Ihydro,Iin,Jin,Kin,Itimestep, NKR
 	REAL(kind=R4SIZE),intent(IN) :: FI2(:), B21_MY(:), FR_LIM(:), COL
 	REAL(kind=R8SIZE), INTENT(IN) :: TPN, xi(:)
 	REAL(kind=R4SIZE),INTENT(INOUT) :: PSI2(:)
@@ -1605,10 +2388,20 @@ enddo
 
 ! ... Locals
 	INTEGER :: NR, KR, IDSD_Negative
-	REAL(kind=R8SIZE) :: C, DEGREE1, DEGREE2, DEGREE3, D, RATEXI, B, A, &
-						           xiR(NKR),FI2R(NKR),PSI2R(NKR),xiNR(NKR)
+	REAL(kind=R8SIZE) :: C, DEGREE1, DEGREE2, DEGREE3, D, RATEXI, B, A
 ! ... Locals
 
+!$omp declare target
+real(8), pointer :: FI2R(:)
+real(8), pointer :: PSI2R(:)
+real(8), pointer :: xiR(:)
+real(8), pointer :: xiNR(:)
+
+
+FI2R => FI2R_temp(:,Iin,Kin,Jin)
+PSI2R => PSI2R_temp(:,Iin,Kin,Jin)
+xiR => xiR_temp(:,Iin,Kin,Jin)
+xiNR => xiNR_temp(:,Iin,Kin,Jin)
 	C=2.0D0/3.0D0
 
 	DEGREE1=C/2.0D0
@@ -1659,7 +2452,9 @@ enddo
 ! recalculation of drop size distribution functions                  (end)
 ! new drop size distribution functions                          (end)
 
+#ifndef OFFLOAD
   201	FORMAT(1X,D13.5)
+#endif
 
 	RETURN
 	END SUBROUTINE JERDFUN_NEW_KS
@@ -1670,11 +2465,11 @@ enddo
             							   R3,VR3,FF3in,RSEC,RO3BL, &
             							   R4,VR4,FF4in,RGEC,RO4BL, &
             							   R5,VR5,FF5in,RHEC,RO5BL, &
-            							   NKR,ICEMAX,COL,DTdyn,NCOND,DTCOND)
+            							   NKR,ICEMAX,COL,DTdyn,NCOND,DTCOND, Iin,Kin,Jin)
 
 	implicit none
 ! ... Interface
-	integer,intent(in) :: NKR,ICEMAX
+	integer,intent(in) :: NKR,ICEMAX,Iin,Kin,Jin
 	integer,intent(out) :: NCOND
 	real(kind=R4SIZE),intent(in) :: R1(:),FF1in(:),RLEC(:),RO1BL(:), &
 					   R2(:,:),FF2in(:,:),RIEC(:,:),RO2BL(:,:), &
@@ -1751,7 +2546,7 @@ enddo
 		  ! ... Drops
 		  IF(ISYM1 == 1)THEN
   			FL1 = 0.0
-  			CALL JERRATE_KS(R1D,TPS,PP,VR1_d,RLEC,RO1BL,B11_MY,1,1,fl1,NKR,ICEMAX)
+  			CALL JERRATE_KS(R1D,TPS,PP,VR1_d,RLEC,RO1BL,B11_MY,1,1,fl1,NKR,ICEMAX,Iin,Kin,Jin)
         sfndummy(1) = SFN11
         CALL JERTIMESC_KS(FF1in,R1D,SFNDUMMY,B11_MY,B8I,1,NKR,ICEMAX,COL)
   			SFN11 = sfndummy(1)
@@ -1767,7 +2562,7 @@ enddo
       IF(ISYM3 == 1) THEN
 	  		FL3 = 0.0
 	  		! ... snow
-		  	CALL JERRATE_KS (R3D,TPS,PP,VR3_d,RSEC,RO3BL,B31_MY,1,3,fl3,NKR,ICEMAX)
+		  	CALL JERRATE_KS (R3D,TPS,PP,VR3_d,RSEC,RO3BL,B31_MY,1,3,fl3,NKR,ICEMAX,Iin,Kin,Jin)
 		  	sfndummy(1) = SFN31
 		  	CALL JERTIMESC_KS(FF3in,R3D,SFNDUMMY,B31_MY,B8I,1,NKR,ICEMAX,COL)
 	  	  	SFN31 = sfndummy(1)
@@ -1776,7 +2571,7 @@ enddo
      IF(ISYM4 == 1) THEN
 	  		FL4 = 0.0
 	  		! ... graupel
-		  	CALL JERRATE_KS(R4D,TPS,PP,VR4_d,RGEC,RO4BL,B41_MY,1,2,fl4,NKR,ICEMAX)
+		  	CALL JERRATE_KS(R4D,TPS,PP,VR4_d,RGEC,RO4BL,B41_MY,1,2,fl4,NKR,ICEMAX,Iin,Kin,Jin)
 
 		  	sfndummy(1) = SFN41
 		  	CALL JERTIMESC_KS(FF4in,R4D,SFNDUMMY,B41_MY,B8I,1,NKR,ICEMAX,COL)
@@ -1786,7 +2581,7 @@ enddo
       IF(ISYM5 == 1) THEN
         FL5 = 0.0
         ! ... hail
-        CALL JERRATE_KS(R5D,TPS,PP,VR5_d,RHEC,RO5BL,B51_MY,1,2,fl5,NKR,ICEMAX)
+        CALL JERRATE_KS(R5D,TPS,PP,VR5_d,RHEC,RO5BL,B51_MY,1,2,fl5,NKR,ICEMAX,Iin,Kin,Jin)
 
         sfndummy(1) = SFN51
         CALL JERTIMESC_KS(FF5in,R5D,SFNDUMMY,B51_MY,B8I,1,NKR,ICEMAX,COL)
@@ -1876,6 +2671,7 @@ end module module_mp_SBM_Auxiliary
 			                  Iin, Jin, Kin)
 
 
+        use jernucl_temp
 	implicit none
 
  	integer,intent(in) :: 	 Kin, Jin, Iin, NKR, NKR_aerosol, ICEMAX, ICEPROCS, Is_This_CloudBase,IONS
@@ -1887,23 +2683,44 @@ end module module_mp_SBM_Auxiliary
 
  ! ... Locals
  	integer :: KR, ICE, K
- 	real(kind=r8size) :: DROPCONCN(NKR), ARG_1, COL3, RORI, TPN, QPN, TPC, AR1, AR2, OPER3,           &
-						           SUM_ICE, DEL2N, FI2(NKR,ICEMAX), TFREEZ_OLD, DTFREEZXZ, RMASSIAA_NUCL, RMASSIBB_NUCL, &
+ 	real(kind=r8size) :: ARG_1, COL3, RORI, TPN, QPN, TPC, AR1, AR2, OPER3,           &
+						           SUM_ICE, DEL2N, TFREEZ_OLD, DTFREEZXZ, RMASSIAA_NUCL, RMASSIBB_NUCL, &
 		                   FI2_K, xi_K, FI2R2, DELMASSICE_NUCL, ES1N, ES2N, EW1N
   real(kind=r8size),parameter :: AL2 = 2834.0D0
-  real(kind=r8size) :: PSI1(NKR),PSI2(NKR,ICEMAX),FCCNR(NKR_aerosol),ROR,XL(NKR),XI(NKR,ICEMAX),PP,COL, &
-						           SUP2_OLD,DSUPICE_XYZ,Win, RCCN(NKR_aerosol),DROPRADII(NKR)
+  real(kind=r8size) :: ROR,PP,COL, &
+						           SUP2_OLD,DSUPICE_XYZ,Win
 	real(kind=r4size) :: TPNreal
  ! ... Locals
+ !$omp declare target
 
  	OPER3(AR1,AR2) = AR1*AR2/(0.622D0+0.378D0*AR1)
+real(8), pointer :: dropconcn(:)
+real(8), pointer :: fi2(:,:)
+real(8), pointer :: psi1(:)
+real(8), pointer :: psi2(:,:)
+real(8), pointer :: fccnr(:)
+real(8), pointer :: xl(:)
+real(8), pointer :: xi(:,:)
+real(8), pointer :: rccn(:)
+real(8), pointer :: dropradii(:)
+
+
+      dropconcn => dropconcn_temp(:,Iin,Kin,Jin)
+      fi2 => fi2_temp(:,:,Iin,Kin,Jin)
+      psi1 => psi1_temp(:,Iin,Kin,Jin)
+      psi2 => psi2_temp(:,:,Iin,Kin,Jin)
+      fccnr => fccnr_temp(:,Iin,Kin,Jin)
+      xl => xl_temp(:,Iin,Kin,Jin)
+      xi => xi_temp(:,:,Iin,Kin,Jin)
+      rccn => rccn_temp(:,Iin,Kin,Jin)
+      dropradii => dropradii_temp(:,Iin,Kin,Jin)
 
 	! ... Adjust the Imput
 	PSI1 = PSI1_r
 	PSI2 = PSI2_r
 	FCCNR = FCCNR_r
-	XL = XL_r
-	XI = XI_r
+	!XL = XL_r
+	!XI = XI_r
 	ROR = ROR_r
 	PP = PP_r
 	COL = COL_r
@@ -1925,7 +2742,7 @@ end module module_mp_SBM_Auxiliary
 	IF(SUP1>0.0D0 .AND. TPC>T_NUCL_DROP_MIN) THEN
 		if(sum(FCCNR) > 0.0)then
 			DROPCONCN = 0.0D0
-			CALL WATER_NUCLEATION (COL, NKR_aerosol, PSI1, FCCNR, xl, TT, QQ, ROR, SUP1, DROPCONCN, &
+			CALL WATER_NUCLEATION (COL, NKR_aerosol, PSI1, FCCNR, xl_r, TT, QQ, ROR, SUP1, DROPCONCN, &
 							 	   PP, Is_This_CloudBase, Win, RO_SOLUTE, RCCN, IONS,MWAERO)
 		endif
 		! ... Transfer drops to Ice-Crystals via direct homogenous nucleation
@@ -1933,7 +2750,7 @@ end module module_mp_SBM_Auxiliary
 		  SUM_ICE = 0.0D0
 		  DO KR=1,NKR
 			  PSI2(KR,2) = PSI2(KR,2) + PSI1(KR)
-			  SUM_ICE = SUM_ICE + COL3*xl(KR)*xl(KR)*PSI1(KR)
+			  SUM_ICE = SUM_ICE + COL3*xl_r(KR)*xl_r(KR)*PSI1(KR)
 			  PSI1(KR) = 0.0D0
 		  END DO
 		  ARG_1 = 334.0D0*SUM_ICE*RORI
@@ -1947,14 +2764,14 @@ end module module_mp_SBM_Auxiliary
 
 	IF(TPC < 0.0D0 .AND. TPC >= T_NUCL_ICE_MIN .AND. DEL2N > 0.0D0) THEN
 
+       DO ICE=1,ICEMAX
 		DO KR=1,NKR
-			DO ICE=1,ICEMAX
 				FI2(KR,ICE)=PSI2(KR,ICE)
 			ENDDO
 		ENDDO
 
 	if(ice_nucl_method == 0) then
-	  CALL ICE_NUCL (PSI2,xi,SUP2,TT,DSUPICE_XYZ,SUP2_OLD,ICEMAX,NKR,COL)
+	  CALL ICE_NUCL (PSI2,xi_r,SUP2,TT,DSUPICE_XYZ,SUP2_OLD,ICEMAX,NKR,COL)
 	endif
 
 	IF(ISIGN_TQ_ICENUCL == 1) THEN
@@ -1965,7 +2782,7 @@ end module module_mp_SBM_Auxiliary
 		DO K=1,NKR
 			DO ICE=1,ICEMAX
 			  FI2_K=FI2(K,ICE)
-			  xi_K=xi(K,ICE)
+			  xi_K=xi_r(K,ICE)
 			  FI2R2=FI2_K*xi_K*xi_K
 			  RMASSIBB_NUCL=RMASSIBB_NUCL+FI2R2
 			ENDDO
@@ -1979,7 +2796,7 @@ end module module_mp_SBM_Auxiliary
 		DO K=1,NKR
 			DO ICE=1,ICEMAX
 			  FI2_K=PSI2(K,ICE)
-			  xi_K=xi(K,ICE)
+			  xi_K=xi_r(K,ICE)
 			  FI2R2=FI2_K*xi_K*xi_K
 			  RMASSIAA_NUCL=RMASSIAA_NUCL+FI2R2
 			ENDDO
@@ -2040,7 +2857,8 @@ end module module_mp_SBM_Auxiliary
 ! xl((KR), g        - drop bin masses
 
   integer,intent(in) :: 			Is_This_CloudBase, NKR, IONS
-  real(kind=r8size),intent(in) :: 	xl(:), ROR, PP, Win, RCCN(:), COL
+  real(kind=r4size),intent(in) :: 	xl(:)
+  real(kind=r8size),intent(in) :: 	 ROR, PP, Win, RCCN(:), COL
   real(kind=r8size),intent(inout) :: FCCNR(:), PSI1(:), DROPCONCN(:), QQ, TT, SUP1
   real(kind=r4size),intent(in) :: 	 RO_SOLUTE, MWAERO
 
@@ -2052,6 +2870,7 @@ end module module_mp_SBM_Auxiliary
 	 real(kind=r4size) :: TTreal
   ! ... Locals
 
+      !$omp declare target
 	 OPER3(AR1,AR2)=AR1*AR2/(0.622D0+0.378D0*AR1)
 
    DROPCONCN(:) = 0.0D0
@@ -2173,7 +2992,8 @@ end module module_mp_SBM_Auxiliary
 	implicit none
 
 	integer,intent(in) :: NKR, ICEMAX
-	real(kind=r8size),intent(in) :: xi(:,:), DSUPICE_XYZ, COL
+	real(kind=r4size),intent(in) :: xi(:,:)
+	real(kind=r8size),intent(in) ::  DSUPICE_XYZ, COL
 	real(kind=r8size),intent(inout) :: PSI2(:,:),TT,SUP2,SUP2_OLD
 
 	! ... Locals
@@ -2189,7 +3009,7 @@ end module module_mp_SBM_Auxiliary
 	real(kind=r8size) :: C1,C2,TPC,DEL2N,DEL2NN,HELEK1,HELEK2,FF1BN,FACT,DSUP2N,DELTACD,DELTAF, &
 			                 ADDF,DELCONCI_AFNUCL,TPCC,DX
 	! ... Locals
-
+!$omp declare target
 	C1=C1_MEY
 	C2=C2_MEY
 
@@ -2281,6 +3101,7 @@ end module module_mp_SBM_Auxiliary
               3.0D0*COL*PSI2(KR,ICE)*xi(KR,ICE)
            END DO
            DELCONCI_AFNUCL=DABS(CONCI_AFNUCL(ICE)-CONCI_BFNUCL(ICE))
+#ifndef OFFLOAD
            IF(DELCONCI_AFNUCL>10.0D0) THEN
              PRINT*,    'IN SUBROUTINE ICE_NUCL, AFTER NUCLEATION'
              PRINT*,    'BECAUSE DELCONCI_AFNUCL > 10/cm^3'
@@ -2293,14 +3114,17 @@ end module module_mp_SBM_Auxiliary
              PRINT*, 'STOP 099 : DELCONCI_AFNUCL(ICE) > 10/cm^3'
              STOP 099
            ENDIF
+#endif
         END DO
 
 ! new crystal size distribution function                       (end)
 
 
+#ifndef OFFLOAD
   202	FORMAT(1X,2D13.5)
   206	FORMAT(1X,6D13.5)
   302   FORMAT(1X,I2,2X,2D13.5)
+#endif
 
         RETURN
         END SUBROUTINE ICE_NUCL
@@ -2327,7 +3151,7 @@ end module module_mp_SBM_Auxiliary
 	  real(kind=r8size) :: PL(NKR), supmax(NKR), AKOE, BKOE, C3, PR, CCNCONACT, DL1, DL2, &
 	  					            TPC
 	! ... Locals
-
+  !$omp declare target
 	CALL supmax_COEFF(AKOE,BKOE,C3,PP,TT,RO_SOLUTE,IONS,MWAERO)
 
 ! supmax calculation
@@ -2372,12 +3196,13 @@ end module module_mp_SBM_Auxiliary
 		ENDIF
 
 	 END DO ! NR
-
+#ifndef OFFLOAD
    if (nn == -1) then
     print*,"PR, Wbase [cm/s], C3",PR,wbase,C3
     print*,"PL",PL
     CALL wrf_error_fatal ( 'NN is not defined in cloud base routine, model stop' )
    endif
+#endif
 
 	! linear interpolation- finding radius criti of aerosol between
 	! bin number (nn-1) to (nn)
@@ -2422,7 +3247,7 @@ end module module_mp_SBM_Auxiliary
     real(kind=r8size) :: PZERO,TZERO,ALW1,SW,RO_W,HC,EW,RO_V,DV,RO_A,FL,FR,F,TPC,QV,A1,A2, &
 							           C1,C2,DEG01,DEG02
 	! ... Local
-
+!$omp declare target
      TPC = TT-273.15d0
 
 ! CGS :
@@ -2841,7 +3666,7 @@ enddo
  !real(KIND=R4SIZE),parameter :: RO_SOLUTE = 2.16   	! sea salt
  real(kind=r4size),parameter ::  RO_SOLUTE = 1.79  	! ammonium-sulfate
  ! ----------------------------------------------------------------------
- REAL (KIND=R4SIZE) :: FR_LIM(NKR), FRH_LIM(NKR)
+ !REAL (KIND=R4SIZE) :: FR_LIM(NKR), FRH_LIM(NKR)
 
    CONTAINS
  !-----------------------------------------------------------------------
@@ -2861,6 +3686,12 @@ enddo
       &                      RAINNC,RAINNCV,SNOWNC,SNOWNCV,GRAUPELNC,GRAUPELNCV,SR)
  !-----------------------------------------------------------------------
       use temp_arrays
+      use onecond1_temp, only : init_onecond1_temp
+      use jerdfun_ks_temp, only : init_jerdfun_ks_temp
+      use jerrate_ks_temp, only : init_jerrate_ks_temp
+      use jernucl_temp, only : init_jernucl_temp
+      use onecond2_temp, only : init_onecond2_temp
+      use onecond3_temp, only : init_onecond3_temp
        IMPLICIT NONE
  !-----------------------------------------------------------------------
  	INTEGER :: KR,IKL,ICE
@@ -2946,10 +3777,10 @@ enddo
       &  0.1000E-02,0.1000E-05,0.1000E-05, &
       &  2.7015E02/
 
-      REAL (KIND=R4SIZE),DIMENSION (nkr) :: FF1IN,FF3IN,FF4IN,FF5IN,&
-      &              FF1R,FF3R,FF4R,FF5R,FLIQFR_S,FRIMFR_S,FLIQFR_G,FLIQFR_H, &
+      REAL (KIND=R4SIZE),DIMENSION (nkr) ::     FF1R,FF3R,FF4R,FF5R,FLIQFR_S,FRIMFR_S,FLIQFR_G,FLIQFR_H, &
       &              FF1R_NEW,FF3R_NEW,FF4R_NEW,FF5R_NEW
       ! storing FF across loops
+      REAL (KIND=R4SIZE),DIMENSION (nkr,its:ite,kts:kte,jts:jte) :: FF1IN,FF3IN,FF4IN,FF5IN
       REAL (KIND=R4SIZE), DIMENSION (nkr, its:ite, kts:kte, jts:jte) :: &
                      FF1R_all, FF3R_all, FF4R_all,FF5R_all
       REAL (KIND=R4SIZE), DIMENSION (nkr_aerosol, its:ite, kts:kte, jts:jte) :: FCCN_all
@@ -2958,7 +3789,8 @@ enddo
 
       REAL (KIND=R4SIZE),DIMENSION (nkr) :: FL3R,FL4R,FL5R,FL3R_NEW,FL4R_NEW,FL5R_NEW
 
-      REAL (KIND=R4SIZE),DIMENSION (nkr,icemax) :: FF2IN,FF2R,FLIQFR_I
+      REAL (KIND=R4SIZE),DIMENSION (nkr,icemax) :: FF2R,FLIQFR_I
+      REAL (KIND=R4SIZE),DIMENSION (nkr,icemax,its:ite,kts:kte,jts:jte) :: FF2IN
 
       REAL (KIND=R4SIZE) :: XI_MELT(NKR,ICEMAX),XS_MELT(NKR),XG_MELT(NKR),XH_MELT(NKR)
  !!!! NOTE: ZCGS AND OTHER VARIABLES ARE ALSO DIMENSIONED IN FALFLUXHUCM
@@ -2984,13 +3816,13 @@ enddo
  	REAL (KIND=R4SIZE) :: z_full
  	REAL (KIND=R4SIZE) :: VRX(kts:kte,NKR)
 
- 	REAL (KIND=R4SIZE) :: VR1_Z(NKR,KTS:KTE), FACTOR_P, VR1_Z3D(NKR,ITS:ITE,KTS:KTE,JTS:JTE)
- 	REAL (KIND=R4SIZE) :: VR2_ZC(NKR,KTS:KTE), VR2_Z(NKR,ICEMAX)
- 	REAL (KIND=R4SIZE) :: VR2_ZP(NKR,KTS:KTE)
- 	REAL (KIND=R4SIZE) :: VR2_ZD(NKR,KTS:KTE)
- 	REAL (KIND=R4SIZE) :: VR3_Z(NKR,KTS:KTE), VR3_Z3D(NKR,ITS:ITE,KTS:KTE,JTS:JTE)
- 	REAL (KIND=R4SIZE) :: VR4_Z(NKR,KTS:KTE), VR4_Z3D(NKR,ITS:ITE,KTS:KTE,JTS:JTE)
- 	REAL (KIND=R4SIZE) :: VR5_Z(NKR,KTS:KTE), VR5_Z3D(NKR,ITS:ITE,KTS:KTE,JTS:JTE)
+ 	REAL (KIND=R4SIZE) :: VR1_Z(NKR,ITS:ITE,KTS:KTE,JTS:JTE), FACTOR_P, VR1_Z3D(NKR,ITS:ITE,KTS:KTE,JTS:JTE)
+ 	REAL (KIND=R4SIZE) :: VR2_ZC(NKR,ITS:ITE,KTS:KTE,JTS:JTE), VR2_Z(NKR,ICEMAX,its:ite,kts:kte,jts:jte)
+ 	REAL (KIND=R4SIZE) :: VR2_ZP(NKR,ITS:ITE,KTS:KTE,JTS:JTE)
+ 	REAL (KIND=R4SIZE) :: VR2_ZD(NKR,ITS:ITE,KTS:KTE,JTS:JTE)
+ 	REAL (KIND=R4SIZE) :: VR3_Z(NKR,ITS:ITE,KTS:KTE,JTS:JTE), VR3_Z3D(NKR,ITS:ITE,KTS:KTE,JTS:JTE)
+ 	REAL (KIND=R4SIZE) :: VR4_Z(NKR,ITS:ITE,KTS:KTE,JTS:JTE), VR4_Z3D(NKR,ITS:ITE,KTS:KTE,JTS:JTE)
+ 	REAL (KIND=R4SIZE) :: VR5_Z(NKR,ITS:ITE,KTS:KTE,JTS:JTE), VR5_Z3D(NKR,ITS:ITE,KTS:KTE,JTS:JTE)
  	REAL (KIND=R4SIZE) :: BulkDen_Snow(NKR,ITS:ITE,KTS:KTE,JTS:JTE) ! Local array for snow density
 
  	REAL (KIND=R4SIZE), PARAMETER :: RON=8.E6, GON=5.E7,PI=3.14159265359
@@ -3055,6 +3887,12 @@ enddo
 
 ! allocate temp
       call init_temp_arrays(its,ite,jts,jte,kts,kte,nkr, icemax, nkr, jbreak)
+      call init_onecond1_temp(its,ite,kts,kte,jts,jte,nkr)
+      call init_onecond2_temp(its,ite,kts,kte,jts,jte,nkr,icemax)
+      call init_onecond3_temp(its,ite,kts,kte,jts,jte,nkr,icemax)
+      call init_jerdfun_ks_temp(its,ite,kts,kte,jts,jte,nkr)
+      call init_jerrate_ks_temp(its,ite,kts,kte,jts,jte,nkr, icemax)
+      call init_jernucl_temp(its,ite,kts,kte,jts,jte,nkr, icemax, nkr_aerosol)
   XS_d = XS
 
   if (itimestep.eq.1)then
@@ -3375,47 +4213,32 @@ enddo
        do j = jts,jte
           do k = kts,kte
              do i = its,ite
-
-            ! ... correcting Look-up-table Terminal velocities
-            FACTOR_P = DSQRT(1.0D6/PCGS(I,K,J))
-            VR2_ZC(1:nkr,K) = VR2(1:nkr,1)*FACTOR_P
-            VR2_ZP(1:nkr,K) = VR2(1:nkr,2)*FACTOR_P
-            VR2_ZD(1:nkr,K) = VR2(1:nkr,3)*FACTOR_P
-            VR1_Z(1:nkr,K) =  VR1(1:nkr)*FACTOR_P
-            VR3_Z(1:nkr,K) = VR3(1:nkr)*FACTOR_P
-            VR4_Z(1:nkr,K) = VR4(1:nkr)*FACTOR_P
-            VR5_Z(1:nkr,k) = VR5(1:nkr)*FACTOR_P
-            VR1_Z3D(1:nkr,I,K,J) = VR1(1:nkr)*FACTOR_P
-            VR3_Z3D(1:nkr,I,K,J) = VR3(1:nkr)*FACTOR_P
-            VR4_Z3D(1:nkr,I,K,J) = VR4(1:nkr)*FACTOR_P
-            VR5_Z3D(1:nkr,I,K,J) = VR5(1:nkr)*FACTOR_P
-
      			! ... Liquid
      			  KRR = 0
      			  DO kr = p_ff1i01,p_ff1i33
      				 KRR = KRR + 1
-     				 FF1R(KRR) = chem_new(I,K,J,KR)
-     				 IF (FF1R(KRR) < 0.0)FF1R(KRR) = 0.0
+     				 ff1r_all(krr,i,k,j) = chem_new(I,K,J,KR)
+     				 IF (ff1r_all(krr,i,k,j) < 0.0)ff1r_all(krr,i,k,j) = 0.0
      			  END DO
      			! ... CCN
      			  KRR = 0
      			  DO kr=p_ff8i01,p_ff8i43
      				 KRR = KRR + 1
-     				 FCCN(KRR) = chem_new(I,K,J,KR)
-     				 if (fccn(krr) < 0.0)fccn(krr) = 0.0
+     				 FCCN_all(KRR,i,k,j) = chem_new(I,K,J,KR)
+     				 if (FCCN_all(KRR,i,k,j) < 0.0)FCCN_all(KRR,i,k,j) = 0.0
      			  END DO
 
    				! no explicit Ice Crystals in FSBM
-   				 FF2R(:,1) = 0.0
-   				 FF2R(:,2) = 0.0
-   				 FF2R(:,3) = 0.0
+   				 FF2R_all(:,1,i,k,j) = 0.0
+   				 FF2R_all(:,2,i,k,j) = 0.0
+   				 FF2R_all(:,3,i,k,j) = 0.0
 
    				! ... Snow
    				KRR=0
    				DO kr=p_ff5i01,p_ff5i33
    					KRR=KRR+1
-   					FF3R(KRR)=chem_new(I,K,J,KR)
-   					if (ff3r(krr) < 0.0)ff3r(krr) = 0.0
+   					FF3R_all(KRR,i,k,j)=chem_new(I,K,J,KR)
+   					if (FF3R_all(KRR,i,k,j) < 0.0)FF3R_all(KRR,i,k,j) = 0.0
    				END DO
 
           ! ... Hail or Graupel
@@ -3423,19 +4246,57 @@ enddo
            KRR=0
            DO kr=p_ff6i01,p_ff6i33
                KRR=KRR+1
-               FF5R(KRR) = chem_new(I,K,J,KR)
-               if (ff5r(krr) < 0.0)ff5r(krr) = 0.0
-               FF4R(KRR) = 0.0
+               FF5R_all(KRR,i,k,j) = chem_new(I,K,J,KR)
+               if (FF5R_all(KRR,i,k,j) < 0.0)FF5R_all(KRR,i,k,j) = 0.0
+               FF4R_all(KRR,i,k,j) = 0.0
            ENDDO
           else
            KRR=0
            DO kr=p_ff6i01,p_ff6i33
                KRR=KRR+1
-               FF4R(KRR) = chem_new(I,K,J,KR)
-               if (ff4r(krr) < 0.0)ff4r(krr) = 0.0
-               FF5R(KRR) = 0.0
+               FF4R_all(KRR,i,k,j) = chem_new(I,K,J,KR)
+               if (FF4R_all(KRR,i,k,j) < 0.0)FF4R_all(KRR,i,k,j) = 0.0
+               FF5R_all(KRR, i,k,j) = 0.0
            ENDDO
           endif
+       enddo
+      enddo
+      enddo
+
+
+#define COND1 1
+#define COND2 1
+#define COND3 1
+
+#if 1
+!$omp target teams distribute parallel do collapse(3)   &
+!$omp private ( &
+!$omp fmax1,fmax2,fmax3,fmax4,fmax5,&
+!$omp isym1,isym2,isym3,isym4,isym5) &
+!$omp map(from: vr2_zc,vr2_zp,vr2_zd,vr1_z,vr3_z,vr4_z,vr5_z,vr1_z3d,vr3_z3d,vr4_z3d,vr5_z3d)
+#endif
+
+      do jj = 1,jte-jts+1
+         do kk = 1,kte-kts+1
+            do ii = 1,ite-its+1
+
+               i = ii + its - 1
+               j = jj + jts - 1
+               k = kk + kts - 1
+            ! ... correcting Look-up-table Terminal velocities
+            FACTOR_P = DSQRT(1.0D6/PCGS(I,K,J))
+            VR2_ZC(:,i,k,j) = VR2(1:nkr,1)*FACTOR_P
+            VR2_ZP(:,i,k,j) = VR2(1:nkr,2)*FACTOR_P
+            VR2_ZD(:,i,k,j) = VR2(1:nkr,3)*FACTOR_P
+            VR1_Z(:,i,k,j) =  VR1(1:nkr)*FACTOR_P
+            VR3_Z(:,i,k,j) = VR3(1:nkr)*FACTOR_P
+            VR4_Z(:,i,k,j) = VR4(1:nkr)*FACTOR_P
+            VR5_Z(:,i,k,j) = VR5(1:nkr)*FACTOR_P
+            VR1_Z3D(1:nkr,I,K,J) = VR1(1:nkr)*FACTOR_P
+            VR3_Z3D(1:nkr,I,K,J) = VR3(1:nkr)*FACTOR_P
+            VR4_Z3D(1:nkr,I,K,J) = VR4(1:nkr)*FACTOR_P
+            VR5_Z3D(1:nkr,I,K,J) = VR5(1:nkr)*FACTOR_P
+
 
 ! +---------------------------------------------+
 ! Neucliation, Condensation, Collisions
@@ -3450,8 +4311,10 @@ enddo
              TTA=T_NEW(I,K,J)
              QQA=QV(I,K,J)
 
+#ifndef OFFLOAD
              IF (QQA.LE.0) call wrf_message("WARNING: FAST SBM, QQA < 0")
              IF (QQA.LE.0) print*,'I,J,K,Told,Tnew,QQA = ',I,J,K,TT,TTA,QQA
+#endif
              IF (QQA.LE.0) QQA = 1.0D-10
 
               ES1N = AA1_MY*DEXP(-BB1_MY/TT)
@@ -3470,7 +4333,7 @@ enddo
               DEL2AD=EW1N/ES2N-1.
               SUP2_OLD=DEL2IN
 
-              IF(del1ad > 0.0 .or. del2ad > 0.0 .or. (sum(FF1R)+sum(FF3R)+sum(FF4R)+sum(FF5R)) > 1.0e-20)THEN
+              IF(del1ad > 0.0 .or. del2ad > 0.0 .or. (sum(FF1R_all(:,i,k,j))+sum(FF3R_all(:,i,k,j))+sum(FF4R_all(:,i,k,j))+sum(FF5R_all(:,i,k,j))) > 1.0e-20)THEN
                 DEL_T = (TTA - TT) / NCOND
                 DEL_Q = (QQA - QQ) / NCOND
                 
@@ -3504,19 +4367,21 @@ enddo
 ! Droplet nucleation :
 ! +------------------------------------------+
                           DO KR=1,NKR
-                            FF1IN(KR)=FF1R(KR)
+                            FF1IN(KR,i,k,j)=FF1R_all(KR,i,k,j)
                               DO ICE=1,ICEMAX
-                                FF2IN(KR,ICE)=FF2R(KR,ICE)
+                                FF2IN(KR,ICE,i,k,j)=FF2R_all(KR,ICE,i,k,j)
                               ENDDO
                             ENDDO
                           Is_This_CloudBase = 0
-                          IF(KZ_Cloud_Base(I,J) == K .and. col*sum(FF1IN*XL) < 5.0) Is_This_CloudBase = 1
+                          IF(KZ_Cloud_Base(I,J) == K .and. col*sum(FF1IN(:,i,k,j)*XL) < 5.0) Is_This_CloudBase = 1
                           if (k.lt.kte)then
                             w_stag_my 	= 50.*(w(i,k,j)+w(i,k+1,j))
                           else
                             w_stag_my = 100*w(i,k,j)
                           end if
-                          CALL JERNUCL01_KS(FF1IN,FF2IN,FCCN 		  &
+#if 1
+
+                          CALL JERNUCL01_KS(FF1IN(:,i,k,j),FF2IN(:,:,i,k,j),FCCN_all(:,i,k,j) 		  &
                                             ,XL,XI,TT,QQ       					    &
                                             ,rhocgs(I,K,J),pcgs(I,K,J) 			&
                                             ,DEL1IN,DEL2IN     			        &
@@ -3525,14 +4390,16 @@ enddo
                                             ,RCCN,DROPRADII,NKR,NKR_aerosol,ICEMAX,ICEPROCS &
                                             ,W_Stag_My,Is_This_CloudBase,RO_SOLUTE,IONS,MWAERO &
                                             ,I,J,K)
+#endif
+
                         
                         
                           DO KR=1,NKR
-                            FF1R(KR)=FF1IN(KR)
+                            FF1R_all(KR,i,k,j)=FF1IN(KR,i,k,j)
                             DO ICE=1,ICEMAX
-                              FF3R(KR) = FF3R(KR) + FF2IN(KR,ICE)
-                              FF2IN(KR,ICE) = 0.0
-                              FF2R(KR,ICE) = 0.0
+                              FF3R_all(KR,i,k,j) = FF3R_all(KR,i,k,j) + FF2IN(KR,ICE,i,k,j)
+                              FF2IN(KR,ICE,i,k,j) = 0.0
+                              FF2R_all(KR,ICE,i,k,j) = 0.0
                             END DO
                           END DO
                         END IF
@@ -3543,17 +4410,17 @@ enddo
                         FMAX4=0.
                         FMAX5=0.
                         DO KR=1,NKR
-                          FF1IN(KR)=FF1R(KR)
-                          FMAX1=AMAX1(FF1R(KR),FMAX1)
-                          FF3IN(KR)=FF3R(KR)
-                          FMAX3=AMAX1(FF3R(KR),FMAX3)
-                          FF4IN(KR)=FF4R(KR)
-                          FMAX4=AMAX1(FF4R(KR),FMAX4)
-                          FF5IN(KR)=FF5R(KR)
-                          FMAX5=AMAX1(FF5R(KR),FMAX5)
+                          FF1IN(KR,i,k,j)=FF1R_all(KR,i,k,j)
+                          FMAX1=AMAX1(FF1R_all(KR,i,k,j),FMAX1)
+                          FF3IN(KR,i,k,j)=FF3R_all(KR,i,k,j)
+                          FMAX3=AMAX1(FF3R_all(KR,i,k,j),FMAX3)
+                          FF4IN(KR,i,k,j)=FF4R_all(KR,i,k,j)
+                          FMAX4=AMAX1(FF4R_all(KR,i,k,j),FMAX4)
+                          FF5IN(KR,i,k,j)=FF5R_all(KR,i,k,j)
+                          FMAX5=AMAX1(FF5R_all(KR,i,k,j),FMAX5)
                           DO ICE=1,ICEMAX
-                            FF2IN(KR,ICE)=FF2R(KR,ICE)
-                            FMAX2(ICE)=AMAX1(FF2R(KR,ICE),FMAX2(ICE)) ! ### (KS) FMAX2(3)
+                            FF2IN(KR,ICE,i,k,j)=FF2R_all(KR,ICE,i,k,j)
+                            FMAX2(ICE)=AMAX1(FF2R_all(KR,ICE,i,k,j),FMAX2(ICE)) ! ### (KS) FMAX2(3)
                           END DO
                         END DO
                       ISYM1=0
@@ -3571,57 +4438,70 @@ enddo
                         IF(FMAX5 > 1.E-10)ISYM5 = 1
                       END IF
 
+
                       IF(ISYM1==1 .AND. ((TT-273.15)>-0.187 .OR.(sum(ISYM2)==0 .AND. &
                           ISYM3==0 .AND. ISYM4==0 .AND. ISYM5==0)))THEN
 
+#if COND1
+
                           ! ... only warm phase
                           CALL ONECOND1(TT,QQ,PP,rhocgs(I,K,J) &
-                                        ,VR1_Z(:,K),pcgs(I,K,J) &
+                                        ,VR1_Z(:,i,K,j),pcgs(I,K,J) &
                                         ,DEL1IN,DEL2IN,DIV1,DIV2 &
-                                        ,FF1R,FF1IN,XL,RLEC,RO1BL &
+                                        ,FF1R_all(:,i,k,j),FF1IN(:,i,k,j),XL,RLEC,RO1BL &
                                         ,AA1_MY,BB1_MY,AA2_MY,BB2_MY &
                                         ,C1_MEY,C2_MEY &
                                         ,COL,DTCOND,ICEMAX,NKR,ISYM1 &
                                         ,ISYM2,ISYM3,ISYM4,ISYM5,I,J,K,W(i,k,j),DX,Itimestep)
+#endif
+
+
 
                         ELSE IF(ISYM1==0 .AND. (TT-273.15)<-0.187 .AND. &
                                 (sum(ISYM2)>1 .OR. ISYM3==1 .OR. ISYM4==1 .OR. ISYM5==1))THEN
                                   !IF (TT.GT.213.15)THEN
-                                    VR2_Z(:,1) = VR2_ZC(:,K)
-                                    VR2_Z(:,2) = VR2_ZP(:,K)
-                                    VR2_Z(:,3) = VR2_ZD(:,K)
+#if COND2
+                                    VR2_Z(:,1,i,k,j) = VR2_ZC(:,i,k,j)
+                                    VR2_Z(:,2,i,k,j) = VR2_ZP(:,i,k,j)
+                                    VR2_Z(:,3,i,k,j) = VR2_ZD(:,i,k,j)
                                     CALL ONECOND2(TT,QQ,PP,rhocgs(I,K,J) &
-                                    ,VR2_Z,VR3_Z(:,K),VR4_Z(:,K),VR5_Z(:,K),pcgs(I,K,J) &
+                                    ,VR2_Z(:,:,i,k,j),VR3_Z(:,i,K,j),VR4_Z(:,i,K,j),VR5_Z(:,i,k,j),pcgs(I,K,J) &
                                     ,DEL1IN,DEL2IN,DIV1,DIV2 &
-                                    ,FF2R,FF2IN,XI,RIEC,RO2BL &
-                                    ,FF3R,FF3IN,XS,RSEC,RO3BL &
-                                    ,FF4R,FF4IN,XG,RGEC,RO4BL &
-                                    ,FF5R,FF5IN,XH,RHEC,RO5BL &
+                                    ,FF2R_all(:,:,i,k,j),FF2IN(:,:,i,k,j),XI,RIEC,RO2BL &
+                                    ,FF3R_all(:,i,k,j),FF3IN(:,i,k,j),XS,RSEC,RO3BL &
+                                    ,FF4R_all(:,i,k,j),FF4IN(:,i,k,j),XG,RGEC,RO4BL &
+                                    ,FF5R_all(:,i,k,j),FF5IN(:,i,k,j),XH,RHEC,RO5BL &
                                     ,AA1_MY,BB1_MY,AA2_MY,BB2_MY &
                                     ,C1_MEY,C2_MEY &
                                     ,COL,DTCOND,ICEMAX,NKR &
                                     ,ISYM1,ISYM2,ISYM3,ISYM4,ISYM5,I,J,K,W(i,k,j),DX,Itimestep)
+#endif
+
                                 !END IF
                           ELSE IF(ISYM1==1 .AND. (TT-273.15)<-0.187 .AND. &
                               (sum(ISYM2)>1 .OR. ISYM3==1 .OR. ISYM4==1 .OR. ISYM5==1))THEN
+
+#if COND3
                               IF (TT > 233.15)THEN
-                                VR2_Z(:,1) = VR2_ZC(:,K)
-                                VR2_Z(:,2) = VR2_ZP(:,K)
-                                VR2_Z(:,3) = VR2_ZD(:,K)
+                                VR2_Z(:,1,i,k,j) = VR2_ZC(:,i,k,j)
+                                VR2_Z(:,2,i,k,j) = VR2_ZP(:,i,k,j)
+                                VR2_Z(:,3,i,k,j) = VR2_ZD(:,i,k,j)
                                 CALL ONECOND3(TT,QQ,PP,rhocgs(I,K,J) &
-                                ,VR1_Z(:,K),VR2_Z,VR3_Z(:,K),VR4_Z(:,K),VR5_Z(:,K),pcgs(I,K,J) &
+                                ,VR1_Z(:,i,K,j),VR2_Z(:,:,i,k,j),VR3_Z(:,i,K,j),VR4_Z(:,i,K,j),VR5_Z(:,i,K,j),pcgs(I,K,J) &
                                 ,DEL1IN,DEL2IN,DIV1,DIV2 &
-                                ,FF1R,FF1IN,XL,RLEC,RO1BL &
-                                ,FF2R,FF2IN,XI,RIEC,RO2BL &
-                                ,FF3R,FF3IN,XS,RSEC,RO3BL &
-                                ,FF4R,FF4IN,XG,RGEC,RO4BL &
-                                ,FF5R,FF5IN,XH,RHEC,RO5BL &
+                                ,FF1R_all(:,i,k,j),FF1IN(:,i,k,j),XL,RLEC,RO1BL &
+                                ,FF2R_all(:,:,i,k,j),FF2IN(:,:,i,k,j),XI,RIEC,RO2BL &
+                                ,FF3R_all(:,i,k,j),FF3IN(:,i,k,j),XS,RSEC,RO3BL &
+                                ,FF4R_all(:,i,k,j),FF4IN(:,i,k,j),XG,RGEC,RO4BL &
+                                ,FF5R_all(:,i,k,j),FF5IN(:,i,k,j),XH,RHEC,RO5BL &
                                 ,AA1_MY,BB1_MY,AA2_MY,BB2_MY &
                                 ,C1_MEY,C2_MEY &
                                 ,COL,DTCOND,ICEMAX,NKR &
                                 ,ISYM1,ISYM2,ISYM3,ISYM4,ISYM5,I,J,K,W(i,k,j),DX,Itimestep)
                               ENDIF
+#endif
                             END IF
+
                           END IF ! DIFF.NE.0
                       END IF ! DIFFU.NE.0
                   END DO ! NCOND - end of NCOND loop
@@ -3637,12 +4517,12 @@ enddo
                 end if ! temp
             end if
 
-            FF1R_all(:,i,k,j) = FF1R
-            FF2R_all(:,:,i,k,j) = FF2R
-            FCCN_all(:,i,k,j) = FCCN
-            FF3R_all(:,i,k,j) = FF3R
-            FF5R_all(:,i,k,j) = FF5R
-            FF4R_all(:,i,k,j) = FF4R
+            !FF1R_all(:,i,k,j) = FF1R
+            !FF2R_all(:,:,i,k,j) = FF2R
+            !FCCN_all(:,i,k,j) = FCCN
+            !FF3R_all(:,i,k,j) = FF3R
+            !FF5R_all(:,i,k,j) = FF5R
+            !FF4R_all(:,i,k,j) = FF4R
 
             end do ! i j k
         end do
@@ -4011,7 +4891,7 @@ enddo
       krr=0
       DO KR=p_ff1i01,p_ff1i33
         krr=krr+1
-        DELTAW = VR1_Z(KRR,1)
+        DELTAW = VR1_Z(KRR,i,1,j)
         RAINNC(I,J) = RAINNC(I,J) &
           +10.0*(3./RO1BL(KRR))*COL*DT*DELTAW* &
           chem_new(I,1,J,KR)*XL(KRR)*XL(KRR)
@@ -4022,7 +4902,7 @@ enddo
       KRR=0
       DO KR=p_ff5i01,p_ff5i33
         KRR=KRR+1
-        DELTAW = VR3_Z(KRR,1)
+        DELTAW = VR3_Z(KRR,i,1,j)
         RAINNC(I,J)=RAINNC(I,J) &
           +10.0*(3./RO1BL(KRR))*COL*DT*DELTAW* &
           chem_new(I,1,J,KR)*XS(KRR)*XS(KRR)
@@ -4040,7 +4920,7 @@ enddo
      DO KR=p_ff6i01,p_ff6i33
        KRR=KRR+1
        if(hail_opt == 1)then
-         DELTAW = VR5_Z(KRR,1)
+         DELTAW = VR5_Z(KRR,i,1,j)
          RAINNC(I,J) = RAINNC(I,J) &
          +10.0*(3./RO1BL(KRR))*COL*DT*DELTAW* &
          chem_new(I,1,J,KR)*XH(KRR)*XH(KRR)
@@ -4054,7 +4934,7 @@ enddo
      + 10*(3./RO1BL(KRR))*COL*DT*DELTAW* &
      chem_new(I,1,J,KR)*XH(KRR)*XH(KRR)
    else
-     DELTAW = VR4_Z(KRR,1)
+     DELTAW = VR4_Z(KRR,i,1,j)
      RAINNC(I,J) = RAINNC(I,J) &
       +10.0*(3./RO1BL(KRR))*COL*DT*DELTAW* &
       chem_new(I,1,J,KR)*XG(KRR)*XG(KRR)
@@ -5668,17 +6548,33 @@ enddo
 				 & ,C1_MEY,C2_MEY &
 				 & ,COL,DTCOND,ICEMAX,NKR,ISYM1 &
 				   ,ISYM2,ISYM3,ISYM4,ISYM5,Iin,Jin,Kin,W_in,DX_in,Itimestep)
+        use onecond1_temp
 
+                   ! 36 arguments
         IMPLICIT NONE
 
+        real(kind=r8size), intent(inout) :: TT
+        real(kind=r8size), intent(inout) :: QQ
+        real(kind=r8size), intent(inout) :: del1n,del2n
+        real,              intent(inout) :: FF1(:)
+        real,              intent(inout) :: PSI1(:)
+       integer,            intent(inout) :: isym1, isym2(:), isym3, isym4, isym5
 
-       INTEGER NKR,ICEMAX, ISYM1, ISYM2(ICEMAX),ISYM3,ISYM4,ISYM5, Iin, Jin, Kin, &
- 	  		  sea_spray_no_temp_change_per_grid, Itimestep
-       REAL    COL,VR1(NKR),PSINGLE &
-      &       ,AA1_MY,BB1_MY,AA2_MY,BB2_MY &
-      &       ,DTCOND, W_in,DX_in
+        real(kind=r8size), intent(in) :: PP
+        real, intent(in) :: ROR
+        real, intent(in) :: VR1(:), PSINGLE
+        real(kind=r8size), intent(in) :: div1,div2
+        real, intent(in) ::  R1(:), RLEC(:), Ro1BL(:)
+        real, intent(in) :: AA1_MY, BB1_MY, AA2_MY, BB2_MY
+       REAL, intent(in) :: C1_MEY,C2_MEY
+       REAL, intent(in) ::    COL,DTCOND
+       integer, intent(in) :: icemax, nkr
+       integer, intent(in) :: Iin, Jin, Kin
+       REAL, intent(in) ::       W_in,DX_in
+       integer, intent(in) :: Itimestep
 
-       REAL C1_MEY,C2_MEY
+ 	  		  integer sea_spray_no_temp_change_per_grid
+
        INTEGER I_ABERGERON,I_BERGERON, &
       & KR,ICE,ITIME,KCOND,NR,NRM, &
       & KLIMIT, &
@@ -5688,7 +6584,6 @@ enddo
       & A1_MYN, BB1_MYN, A2_MYN, BB2_MYN,DT,DTT,XRAD, &
       & TPC1, TPC2, TPC3, TPC4, TPC5, &
       & EPSDEL, EPSDEL2,DT0L, DT0I,&
-      & ROR, &
       & CWHUCM,B6,B8L,B8I, &
       & DEL1,DEL2,DEL1S,DEL2S, &
       & TIMENEW,TIMEREV,SFN11,SFN12, &
@@ -5702,41 +6597,31 @@ enddo
         INTEGER K
  ! NEW ALGORITHM OF CONDENSATION (12.01.00)
 
-       REAL  FF1_OLD(NKR),SUPINTW(NKR)
-       DOUBLE PRECISION DSUPINTW(NKR),DD1N,DB11_MY,DAL1,DAL2
+       DOUBLE PRECISION DD1N,DB11_MY,DAL1,DAL2
        DOUBLE PRECISION COL3,RORI,TPN,TPS,QPN,QPS,TOLD,QOLD &
       &                  ,FI1_K,FI2_K,FI3_K,FI4_K,FI5_K &
       &                  ,R1_K,R2_K,R3_K,R4_K,R5_K &
       &                  ,FI1R1,FI2R2,FI3R3,FI4R4,FI5R5 &
       &                  ,RMASSLAA,RMASSLBB,RMASSIAA,RMASSIBB &
       &                  ,ES1N,ES2N,EW1N,ARGEXP &
-      &                  ,TT,QQ,PP &
-      &                  ,DEL1N,DEL2N,DIV1,DIV2 &
       &                  ,OPER2,OPER3,AR1,AR2
 
         DOUBLE PRECISION DELMASSL1
 
  ! DROPLETS
 
-         REAL R1(NKR) &
-      &           ,RLEC(NKR),RO1BL(NKR) &
-      &           ,FI1(NKR),FF1(NKR),PSI1(NKR) &
-      &           ,B11_MY(NKR),B12_MY(NKR)
 
  ! WORK ARRAYS
 
  ! NEW ALGORITHM OF MIXED PHASE FOR EVAPORATION
 
 
- 	REAL DTIMEO(NKR),DTIMEL(NKR) &
-      &           ,TIMESTEPD(NKR)
 
  ! NEW ALGORITHM (NO TYPE OF ICE)
 
- 	REAL :: FL1(NKR), sfndummy(3), R1N(NKR)
+ 	REAL :: sfndummy(3)
  	INTEGER :: IDROP
 
- 	DOUBLE PRECISION :: R1D(NKR),R1ND(NKR)
 
  	OPER2(AR1)=0.622/(0.622+0.378*AR1)/AR1
  	OPER3(AR1,AR2)=AR1*AR2/(0.622+0.378*AR1)
@@ -5758,8 +6643,44 @@ enddo
 
  	DATA DT0L, DT0I /1.E20,1.E20/
 
- 	DOUBLE PRECISION :: DEL1_d , DEL2_d, RW_d , PW_d, RI_d, PI_d, D1N_d, D2N_d, &
- 						VR1_d(NKR)
+ 	DOUBLE PRECISION :: DEL1_d , DEL2_d, RW_d , PW_d, RI_d, PI_d, D1N_d, D2N_d
+    !$omp declare target
+
+    real, pointer :: ff1_old(:)
+    real, pointer :: supintw(:)
+    real(8), pointer :: dsupintw(:)
+    real, pointer :: fi1(:)
+    real, pointer :: b11_my(:)
+    real, pointer :: b12_my(:)
+    real, pointer :: dtimeo(:)
+    real, pointer :: dtimel(:)
+    real, pointer :: timestepd(:)
+    real, pointer :: fl1(:)
+    real, pointer :: r1n(:)
+    real(8), pointer :: r1d(:)
+    real(8), pointer :: r1nd(:)
+    real(8), pointer :: vr1_d(:)
+    real(4), pointer :: fr_lim(:)
+    real(4), pointer :: frh_lim(:)
+
+
+    ff1_old => ff1_old_temp(:,Iin,Kin,Jin)
+    supintw => supintw_temp(:,Iin,Kin,Jin)
+    dsupintw => dsupintw_temp(:,Iin,Kin,Jin)
+    fi1 => fi1_temp(:,Iin,Kin,Jin)
+    b11_my => b11_my_temp(:,Iin,Kin,Jin)
+    b12_my => b12_my_temp(:,Iin,Kin,Jin)
+    dtimeo => dtimeo_temp(:,Iin,Kin,Jin)
+    dtimel => dtimel_temp(:,Iin,Kin,Jin)
+    timestepd => timestepd_temp(:,Iin,Kin,Jin)
+    fl1 => fl1_temp(:,Iin,Kin,Jin)
+    r1n => r1n_temp(:,Iin,Kin,Jin)
+    r1d => r1d_temp(:,Iin,Kin,Jin)
+    r1nd => r1nd_temp(:,Iin,Kin,Jin)
+    vr1_d => vr1_d_temp(:,Iin,Kin,Jin)
+    fr_lim => fr_lim_temp(:,Iin,Kin,Jin)
+    frh_lim => frh_lim_temp(:,Iin,Kin,Jin)
+
 
  sfndummy = 0.0
  B12_MY = 0.0
@@ -5827,7 +6748,7 @@ enddo
  	FL1 = 0.0
  	VR1_d = VR1
  	CALL JERRATE_KS &
- 				(R1D,TPS,PP,VR1_d,RLEC,RO1BL,B11_MY,1,1,fl1,NKR,ICEMAX)
+ 				(R1D,TPS,PP,VR1_d,RLEC,RO1BL,B11_MY,1,1,fl1,NKR,ICEMAX,Iin,Kin,Jin)
  	sfndummy(1)=SFN11
  	CALL JERTIMESC_KS(FI1,R1D,SFNDUMMY,B11_MY,B8L,1,NKR,ICEMAX,COL)
  	SFN11 = sfndummy(1)
@@ -5850,10 +6771,12 @@ enddo
  PI=(OPER2(QPS)+B5I*AL2)*DOPI*SFNI
  QI=B7I*DOPI
 
+#ifndef OFFLOAD
  IF(RW.NE.RW .or. PW.NE.PW)THEN
     print*, 'NaN In ONECOND1'
     call wrf_error_fatal("fatal error in ONECOND1 (RW or PW are NaN), model stop")
  ENDIF
+#endif
 
  KCOND=10
  IF(DEL1N >= 0.0D0) KCOND=11
@@ -5865,7 +6788,10 @@ enddo
       TIMENEW = TIMENEW + DTNEWL
       DTT = DTNEWL
 
+#ifndef OFFLOAD
    	  IF (DTT < 0.0) call wrf_error_fatal("fatal error in ONECOND1-DEL1N>0:(DTT<0), model stop")
+#endif
+
 
      	DEL1_d = DEL1
      	DEL2_d = DEL2
@@ -5895,7 +6821,9 @@ enddo
 
      	IF((DEL1.GT.0.AND.DEL1N.LT.0) &
        		&.AND.ABS(DEL1N).GT.EPSDEL) THEN
+#ifndef OFFLOAD
              		call wrf_error_fatal("fatal error in ONECOND1-1 (DEL1.GT.0.AND.DEL1N.LT.0), model stop")
+#endif
      	ENDIF
 
     ! IN CASE : KCOND.EQ.11
@@ -5909,7 +6837,9 @@ enddo
       TIMENEW = TIMENEW + DTNEWL
       DTT = DTNEWL
 
+#ifndef OFFLOAD
  	    IF (DTT < 0.0) call wrf_error_fatal("fatal error in ONECOND1-DEL1N<0:(DTT<0), model stop")
+#endif
 
  	    DEL1_d = DEL1
  	    DEL2_d = DEL2
@@ -5939,7 +6869,9 @@ enddo
 
       IF((DEL1.LT.0.AND.DEL1N.GT.0) &
         .AND.ABS(DEL1N).GT.EPSDEL) THEN
+#ifndef OFFLOAD
          call wrf_error_fatal("fatal error in ONECOND1-2 (DEL1.LT.0.AND.DEL1N.GT.0), model stop")
+#endif
       ENDIF
 
     ENDIF
@@ -5973,6 +6905,7 @@ enddo
  TPN = TPS + DAL1*DELMASSL1
 
  IF(ABS(DAL1*DELMASSL1) > 3.0 )THEN
+#ifndef OFFLOAD
  	print*,"ONECOND1-in(start)"
 	print*,"I=",Iin,"J=",Jin,"Kin",Kin,"W",w_in,"DX",dx_in
  	print*,"DELMASSL1",DELMASSL1,"DT",DTT
@@ -5982,6 +6915,7 @@ enddo
 	print*,'FI1 before',FI1,'PSI1 after',PSI1
  	print*,"ONECOND1-in(end)"
  	call wrf_error_fatal("fatal error in ONECOND1-in (ABS(DAL1*DELMASSL1) > 3.0), model stop")
+#endif
  ENDIF
 
  IF(ISYM1 == 1) THEN
@@ -6031,6 +6965,7 @@ enddo
  TPN = TOLD + DAL1*DELMASSL1
 
  IF(ABS(DAL1*DELMASSL1) > 5.0 )THEN
+#ifndef OFFLOAD
  	print*,"ONECOND1-out (start)"
  	print*,"I=",Iin,"J=",Jin,"Kin",Kin,"W",w_in,"DX",dx_in
  	print*,"DEL1N,DEL2N,D1N,D2N,RW,PW,RI,PI,DT"
@@ -6045,6 +6980,7 @@ enddo
  	IF(ABS(DAL1*DELMASSL1) > 5.0 )THEN
  		call wrf_error_fatal("fatal error in ONECOND1-out (ABS(DAL1*DELMASSL1) > 5.0), model stop")
  	ENDIF
+#endif
  ENDIF
 
  TT=TPN
@@ -6069,19 +7005,35 @@ enddo
  					 & ,COL,DTCOND,ICEMAX,NKR &
  					 & ,ISYM1,ISYM2,ISYM3,ISYM4,ISYM5, &
  					 	Iin,Jin,Kin,W_in,DX_in,Itimestep)
-
+use onecond2_temp
     IMPLICIT NONE
 
-       INTEGER NKR,ICEMAX,ISYM1, Iin, Jin, Kin, Itimestep
-       REAL    COL,VR2(NKR,ICEMAX),VR3(NKR),VR4(NKR) &
-      &           ,VR5(NKR),PSINGLE &
-      &       ,AA1_MY,BB1_MY,AA2_MY,BB2_MY &
-      &       ,DTCOND,W_in,DX_in
+      !$omp declare target
+      real(kind=r8size), intent(inout) :: TT,QQ
+      real(kind=r8size), intent(in) :: PP
+      real, intent(in) :: ROR
+      real, intent(in) :: VR2(:,:), VR3(:), VR4(:), VR5(:), PSINGLE
+      real(kind=r8size), intent(inout) ::    DEL1N,DEL2N
+      real(kind=r8size), intent(in) :: DIV1,DIV2
+      real, intent(in) :: R2(:,:), RIEC(:,:), Ro2BL(:,:)
+      real, intent(inout) :: PSI2(:,:), PSI3(:), PSI4(:), PSI5(:)
+      real, intent(inout) :: FF2(:,:), FF3(:), FF4(:), FF5(:)
+      real, intent(in) :: R3(:), RSEC(:), RO3BL(:)
+      real, intent(in) :: R4(:), RGEC(:), RO4BL(:)
+      real, intent(in) :: R5(:), RHEC(:), RO5BL(:)
+      REAL, intent(in) :: AA1_MY,BB1_MY,AA2_MY,BB2_MY
+      real, intent(in) :: C1_MEY,C2_MEY
+      real, intent(in) :: COL, DTCOND
+      integer, intent(in) :: icemax, nkr
+      integer, intent(inout) :: isym1,isym2(:),isym3,isym4,isym5
+      integer, intent(in) :: Iin, Jin, Kin
+      real, intent(in) :: W_in, DX_in
+      integer, intent(in) :: Itimestep
 
-       REAL C1_MEY,C2_MEY
+
        INTEGER I_MIXCOND,I_MIXEVAP,I_ABERGERON,I_BERGERON, &
       & KR,ICE,ITIME,ICM,KCOND,NR,NRM,INUC, &
-      & ISYM2(ICEMAX),ISYM3,ISYM4,ISYM5,KP,KLIMIT, &
+      & KP,KLIMIT, &
       & KM,ITER,KLIMITL,KLIMITG,KLIMITH,KLIMITI_1,KLIMITI_2,KLIMITI_3, &
       & NCRITI
        REAL AL1,AL2,D,GAM,POD, &
@@ -6089,7 +7041,6 @@ enddo
       & A1_MYN, BB1_MYN, A2_MYN, BB2_MYN,DT,DTT,XRAD, &
       & TPC1, TPC2, TPC3, TPC4, TPC5, &
       & EPSDEL, DT0L, DT0I, &
-      & ROR, &
       & DEL1NUC,DEL2NUC, &
       & CWHUCM,B6,B8L,B8I,RMASSGL,RMASSGI, &
       & DEL1,DEL2,DEL1S,DEL2S, &
@@ -6114,8 +7065,6 @@ enddo
       &                  ,FI1R1,FI2R2,FI3R3,FI4R4,FI5R5 &
       &                  ,RMASSLAA,RMASSLBB,RMASSIAA,RMASSIBB &
       &                  ,ES1N,ES2N,EW1N,ARGEXP &
-      &                  ,TT,QQ,PP &
-      &                  ,DEL1N,DEL2N,DIV1,DIV2 &
       &                  ,OPER2,OPER3,AR1,AR2
 
         DOUBLE PRECISION DELTAQ1,DELMASSI1,DELMASSL1
@@ -6124,51 +7073,11 @@ enddo
 
  ! CRYSTALS
 
- 	REAL R2(NKR,ICEMAX) &
-      &           ,RIEC(NKR,ICEMAX) &
-      &           ,RO2BL(NKR,ICEMAX) &
-      &           ,FI2(NKR,ICEMAX),PSI2(NKR,ICEMAX) &
-      &           ,FF2(NKR,ICEMAX) &
-      &           ,B21_MY(NKR,ICEMAX),B22_MY(NKR,ICEMAX)
 
- ! SNOW
-         REAL R3(NKR) &
-      &           ,RSEC(NKR),RO3BL(NKR) &
-      &           ,FI3(NKR),FF3(NKR),PSI3(NKR) &
-      &           ,B31_MY(NKR),B32_MY(NKR)
 
- ! GRAUPELS
 
-         REAL R4(NKR) &
-      &           ,RGEC(NKR),RO4BL(NKR) &
-      &           ,FI4(NKR),FF4(NKR),PSI4(NKR) &
-      &           ,B41_MY(NKR),B42_MY(NKR)
-
- ! HAIL
-         REAL R5(NKR) &
-      &           ,RHEC(NKR),RO5BL(NKR) &
-      &           ,FI5(NKR),FF5(NKR),PSI5(NKR) &
-      &           ,B51_MY(NKR),B52_MY(NKR)
-
- ! CCN
-
- 	REAL DTIMEG(NKR),DTIMEH(NKR)
-
- 	REAL DEL2D(ICEMAX),DTIMEO(NKR),DTIMEL(NKR) &
-
-      &           ,DTIMEI_1(NKR),DTIMEI_2(NKR),DTIMEI_3(NKR) &
-      &           ,SFNI1(ICEMAX),SFNI2(ICEMAX) &
-      &           ,TIMESTEPD(NKR) &
-      &           ,FI1REF(NKR),PSI1REF(NKR) &
-      &           ,FI2REF(NKR,ICEMAX),PSI2REF(NKR,ICEMAX)&
-      &           ,FCCNRREF(NKR)
-
- 	REAL :: FL1(NKR), sfndummy(3), FL3(NKR), FL4(NKR), FL5(NKR), &
- 					R2N(NKR,ICEMAX), R3N(NKR), R4N(NKR), R5N(NKR)
+         real :: sfndummy(3)
  	INTEGER :: IDROP, ISYMICE
- 	DOUBLE PRECISION :: R2D(NKR,ICEMAX),R3D(NKR), R4D(NKR), R5D(NKR), &
- 			    R2ND(NKR,ICEMAX),R3ND(NKR), R4ND(NKR), R5ND(NKR), &
- 			    VR2_d(NKR,ICEMAX), VR3_d(NKR), VR4_d(NKR), VR5_d(NKR)
 
  	OPER2(AR1)=0.622/(0.622+0.378*AR1)/AR1
  	OPER3(AR1,AR2)=AR1*AR2/(0.622+0.378*AR1)
@@ -6191,15 +7100,120 @@ enddo
 
  	DOUBLE PRECISION :: DEL1_d, DEL2_d, RW_d, PW_d, RI_d, PI_d, D1N_d, D2N_d
 
- 	B22_MY = 0.0
- 	B32_MY = 0.0
- 	B42_MY = 0.0
- 	B52_MY = 0.0
 
- 	B21_MY = 0.0
- 	B31_MY = 0.0
- 	B41_MY = 0.0
- 	B51_MY = 0.0
+
+REAL, pointer :: FI2(:,:)
+real, pointer :: B21_MY(:,:)
+real, pointer :: B22_MY(:,:)
+REAL, pointer :: FI3(:)
+real, pointer :: B31_MY(:)
+real, pointer :: B32_MY(:)
+REAL, pointer :: FI4(:)
+real, pointer :: B41_MY(:)
+real, pointer :: B42_MY(:)
+REAL, pointer :: FI5(:)
+real, pointer :: B51_MY(:)
+real, pointer :: B52_MY(:)
+REAL, pointer :: DTIMEG(:)
+real, pointer :: DTIMEH(:)
+REAL, pointer :: DEL2D(:)
+real, pointer :: DTIMEO(:)
+real, pointer :: DTIMEL(:)
+real, pointer :: DTIMEI_1(:)
+real, pointer :: DTIMEI_2(:)
+real, pointer :: DTIMEI_3(:)
+real, pointer :: SFNI1(:)
+real, pointer :: SFNI2(:)
+real, pointer :: TIMESTEPD(:)
+real, pointer :: FI1REF(:)
+real, pointer :: PSI1REF(:)
+real, pointer :: FI2REF(:,:)
+real, pointer :: PSI2REF(:,:)
+real, pointer :: FCCNRREF(:)
+REAL, pointer :: FL1(:)
+real, pointer :: FL3(:)
+real, pointer :: FL4(:)
+real, pointer :: FL5(:)
+real, pointer :: R2N(:,:)
+real, pointer :: R3N(:)
+real, pointer :: R4N(:)
+real, pointer :: R5N(:)
+real(8), pointer :: R2D(:,:)
+real(8), pointer :: R3D(:)
+real(8), pointer :: R4D(:)
+real(8), pointer :: R5D(:)
+real(8), pointer :: R2ND(:,:)
+real(8), pointer :: R3ND(:)
+real(8), pointer :: R4ND(:)
+real(8), pointer :: R5ND(:)
+real(8), pointer :: VR2_d(:,:)
+real(8), pointer :: VR3_d(:)
+real(8), pointer :: VR4_d(:)
+real(8), pointer :: VR5_d(:)
+real(4), pointer :: fr_lim(:)
+real(4), pointer :: frh_lim(:)
+
+
+        FI2 => FI2_temp(:,:,Iin,Kin,Jin)
+        B21_MY => B21_MY_temp(:,:,Iin,Kin,Jin)
+        B22_MY => B22_MY_temp(:,:,Iin,Kin,Jin)
+        FI3 => FI3_temp(:,Iin,Kin,Jin)
+        B31_MY => B31_MY_temp(:,Iin,Kin,Jin)
+        B32_MY => B32_MY_temp(:,Iin,Kin,Jin)
+        FI4 => FI4_temp(:,Iin,Kin,Jin)
+        B41_MY => B41_MY_temp(:,Iin,Kin,Jin)
+        B42_MY => B42_MY_temp(:,Iin,Kin,Jin)
+        FI5 => FI5_temp(:,Iin,Kin,Jin)
+        B51_MY => B51_MY_temp(:,Iin,Kin,Jin)
+        B52_MY => B52_MY_temp(:,Iin,Kin,Jin)
+        DTIMEG => DTIMEG_temp(:,Iin,Kin,Jin)
+        DTIMEH => DTIMEH_temp(:,Iin,Kin,Jin)
+        DEL2D => DEL2D_temp(:,Iin,Kin,Jin)
+        DTIMEO => DTIMEO_temp(:,Iin,Kin,Jin)
+        DTIMEL => DTIMEL_temp(:,Iin,Kin,Jin)
+        DTIMEI_1 => DTIMEI_1_temp(:,Iin,Kin,Jin)
+        DTIMEI_2 => DTIMEI_2_temp(:,Iin,Kin,Jin)
+        DTIMEI_3 => DTIMEI_3_temp(:,Iin,Kin,Jin)
+        SFNI1 => SFNI1_temp(:,Iin,Kin,Jin)
+        SFNI2 => SFNI2_temp(:,Iin,Kin,Jin)
+        TIMESTEPD => TIMESTEPD_temp(:,Iin,Kin,Jin)
+        FI1REF => FI1REF_temp(:,Iin,Kin,Jin)
+        PSI1REF => PSI1REF_temp(:,Iin,Kin,Jin)
+        FI2REF => FI2REF_temp(:,:,Iin,Kin,Jin)
+        PSI2REF => PSI2REF_temp(:,:,Iin,Kin,Jin)
+        FCCNRREF => FCCNRREF_temp(:,Iin,Kin,Jin)
+        FL1 => FL1_temp(:,Iin,Kin,Jin)
+        FL3 => FL3_temp(:,Iin,Kin,Jin)
+        FL4 => FL4_temp(:,Iin,Kin,Jin)
+        FL5 => FL5_temp(:,Iin,Kin,Jin)
+        R2N => R2N_temp(:,:,Iin,Kin,Jin)
+        R3N => R3N_temp(:,Iin,Kin,Jin)
+        R4N => R4N_temp(:,Iin,Kin,Jin)
+        R5N => R5N_temp(:,Iin,Kin,Jin)
+        R2D => R2D_temp(:,:,Iin,Kin,Jin)
+        R3D => R3D_temp(:,Iin,Kin,Jin)
+        R4D => R4D_temp(:,Iin,Kin,Jin)
+        R5D => R5D_temp(:,Iin,Kin,Jin)
+        R2ND => R2ND_temp(:,:,Iin,Kin,Jin)
+        R3ND => R3ND_temp(:,Iin,Kin,Jin)
+        R4ND => R4ND_temp(:,Iin,Kin,Jin)
+        R5ND => R5ND_temp(:,Iin,Kin,Jin)
+        VR2_d => VR2_d_temp(:,:,Iin,Kin,Jin)
+        VR3_d => VR3_d_temp(:,Iin,Kin,Jin)
+        VR4_d => VR4_d_temp(:,Iin,Kin,Jin)
+        VR5_d => VR5_d_temp(:,Iin,Kin,Jin)
+        fr_lim => fr_lim_temp(:,Iin,Kin,Jin)
+        frh_lim => frh_lim_temp(:,Iin,Kin,Jin)
+
+! 	B22_MY = 0.0
+! 	B32_MY = 0.0
+! 	B42_MY = 0.0
+! 	B52_MY = 0.0
+!
+! 	B21_MY = 0.0
+! 	B31_MY = 0.0
+! 	B41_MY = 0.0
+! 	B51_MY = 0.0
 
  	SFNDUMMY = 0.0
  	R2D = R2
@@ -6291,7 +7305,7 @@ enddo
  	    FL1 = 0.0
  	    VR2_d = VR2
  	  ! ... ice crystals
- 		  CALL JERRATE_KS (R2D,TPS,PP,VR2_d,RIEC,RO2BL,B21_MY,3,2,fl1,NKR,ICEMAX)
+ 		  CALL JERRATE_KS (R2D,TPS,PP,VR2_d,RIEC,RO2BL,B21_MY,3,2,fl1,NKR,ICEMAX,Iin,Kin,Jin)
 
  		  CALL JERTIMESC_KS (FI2,R2D,SFNI1,B21_MY,B8I,ICM,NKR,ICEMAX,COL)
  	  ENDIF
@@ -6299,7 +7313,7 @@ enddo
  	    FL3 = 0.0
  	    VR3_d = VR3
  	  ! ... snow
- 		  CALL JERRATE_KS (R3D,TPS,PP,VR3_d,RSEC,RO3BL,B31_MY,1,3,fl3,NKR,ICEMAX)
+ 		  CALL JERRATE_KS (R3D,TPS,PP,VR3_d,RSEC,RO3BL,B31_MY,1,3,fl3,NKR,ICEMAX,Iin,Kin,Jin)
 
  		  sfndummy(1) = SFN31
  		  CALL JERTIMESC_KS(FI3,R3D,SFNDUMMY,B31_MY,B8I,1,NKR,ICEMAX,COL)
@@ -6309,7 +7323,7 @@ enddo
  	    FL4 = 0.0
  	    VR4_d = VR4
  	  ! ... graupel
- 		  CALL JERRATE_KS(R4D,TPS,PP,VR4_d,RGEC,RO4BL,B41_MY,1,2,fl4,NKR,ICEMAX)
+ 		  CALL JERRATE_KS(R4D,TPS,PP,VR4_d,RGEC,RO4BL,B41_MY,1,2,fl4,NKR,ICEMAX,Iin,Kin,Jin)
 
  		  sfndummy(1) = SFN41
  		  CALL JERTIMESC_KS(FI4,R4D,SFNDUMMY,B41_MY,B8I,1,NKR,ICEMAX,COL)
@@ -6319,7 +7333,7 @@ enddo
  	    FL5 = 0.0
  	    VR5_d = VR5
  	  ! ... hail
- 		  CALL JERRATE_KS(R5D,TPS,PP,VR5_d,RHEC,RO5BL,B51_MY,1,2,fl5,NKR,ICEMAX)
+ 		  CALL JERRATE_KS(R5D,TPS,PP,VR5_d,RHEC,RO5BL,B51_MY,1,2,fl5,NKR,ICEMAX,Iin,Kin,Jin)
 
  		  sfndummy(1) = SFN51
  		  CALL JERTIMESC_KS(FI5,R5D,SFNDUMMY,B51_MY,B8I,1,NKR,ICEMAX,COL)
@@ -6351,8 +7365,10 @@ enddo
      IF(DEL2N > 0.0) KCOND=21
 
    	IF(RW.NE.RW .or. PW.NE.PW)THEN
+#ifndef OFFLOAD
  	    print*, 'NaN In ONECOND2'
  	    call wrf_error_fatal("fatal error in ONECOND2 (RW or PW are NaN), model stop")
+#endif
    	ENDIF
 
  ! ... (ONLY ICE)
@@ -6363,7 +7379,9 @@ enddo
        TIMENEW = TIMENEW + DTNEWL
        DTT = DTNEWL
 
+#ifndef OFFLOAD
  			IF (DTT < 0.0) call wrf_error_fatal("fatal error in ONECOND2-DEL2N>0:(DTT<0), model stop")
+#endif
 
  			DEL1_d = DEL1
  			DEL2_d = DEL2
@@ -6435,7 +7453,9 @@ enddo
 
  			IF((DEL2.GT.0.AND.DEL2N.LT.0) &
           		.AND.ABS(DEL2N).GT.EPSDEL) THEN
+#ifndef OFFLOAD
                  call wrf_error_fatal("fatal error in module_mp_fast_sbm (DEL2.GT.0.AND.DEL2N.LT.0), model stop")
+#endif
  			ENDIF
 
  	  ELSE
@@ -6446,7 +7466,9 @@ enddo
         TIMENEW = TIMENEW + DTNEWL
         DTT = DTNEWL
 
+#ifndef OFFLOAD
  			  IF (DTT < 0.0) call wrf_error_fatal("fatal error in ONECOND2-DEL2N<0:(DTT<0), model stop")
+#endif
 
    			DEL1_d = DEL1
    			DEL2_d = DEL2
@@ -6521,7 +7543,9 @@ enddo
 
        IF((DEL2.LT.0.AND.DEL2N.GT.0) &
             .AND.ABS(DEL2N).GT.EPSDEL) THEN
+#ifndef OFFLOAD
              call wrf_error_fatal("fatal error in module_mp_fast_sbm (DEL2.LT.0.AND.DEL2N.GT.0), model stop")
+#endif
        ENDIF
 
  		 ! IN CASE : KCOND.NE.21
@@ -6584,6 +7608,7 @@ enddo
  		TPN = TPS+DAL2*DELMASSI1
 
  	  IF(ABS(DAL2*DELMASSI1) > 5.0 )THEN
+#ifndef OFFLOAD
       print*,"ONECOND2-out (start)"
       print*,"I=",Iin,"J=",Jin,"Kin",Kin,"W",w_in,"DX",dx_in
       print*,"DEL1N,DEL2N,D1N,D2N,RW,PW,RI,PI,DT"
@@ -6607,6 +7632,7 @@ enddo
       IF(ABS(DAL2*DELMASSI1) > 5.0 )THEN
       call wrf_error_fatal("fatal error in ONECOND2-out (ABS(DAL2*DELMASSI1) > 5.0), model stop")
  		ENDIF
+#endif
  	  ENDIF
 
  !  END OF TIME SPLITTING
@@ -6641,57 +7667,41 @@ enddo
  						 & ,COL,DTCOND,ICEMAX,NKR &
  						 & ,ISYM1,ISYM2,ISYM3,ISYM4,ISYM5, &
  						 	Iin,Jin,Kin,W_in,DX_in, Itimestep)
-
+use onecond3_temp
         IMPLICIT NONE
-        INTEGER ICEMAX,NKR,KR,ITIME,ICE,KCOND,K &
-      &           ,ISYM1,ISYM2(ICEMAX),ISYM3,ISYM4,ISYM5, Kin, Iin, Jin, Itimestep
+      real(kind=r8size), intent(inout) :: TT,QQ
+      real(kind=r8size), intent(in) :: PP
+      real, intent(in) :: ROR
+      real, intent(in) :: VR1(:), VR2(:,:), VR3(:), VR4(:), VR5(:), PSINGLE
+      real(kind=r8size), intent(inout) ::    DEL1N,DEL2N
+      real(kind=r8size), intent(in) :: DIV1,DIV2
+      real, intent(in) :: R2(:,:), RIEC(:,:), Ro2BL(:,:)
+      real, intent(inout) :: PSI1(:), PSI2(:,:), PSI3(:), PSI4(:), PSI5(:)
+      real, intent(inout) :: FF1(:), FF2(:,:), FF3(:), FF4(:), FF5(:)
+      real, intent(in) :: R1(:), RLEC(:), RO1BL(:)
+      real, intent(in) :: R3(:), RSEC(:), RO3BL(:)
+      real, intent(in) :: R4(:), RGEC(:), RO4BL(:)
+      real, intent(in) :: R5(:), RHEC(:), RO5BL(:)
+      REAL, intent(in) :: AA1_MY,BB1_MY,AA2_MY,BB2_MY
+      real, intent(in) :: C1_MEY,C2_MEY
+      real, intent(in) :: COL, DTCOND
+      integer, intent(in) :: icemax, nkr
+      integer, intent(inout) :: isym1,isym2(:),isym3,isym4,isym5
+      integer, intent(in) :: Iin, Jin, Kin
+      real, intent(in) :: W_in, DX_in
+      integer, intent(in) :: Itimestep
+
+
+      integer itime, kr, ice, kcond, k
         INTEGER KLIMITL,KLIMITG,KLIMITH,KLIMITI_1, &
       &  KLIMITI_2,KLIMITI_3
         INTEGER I_MIXCOND,I_MIXEVAP,I_ABERGERON,I_BERGERON
-        REAL ROR,VR1(NKR),VR2(NKR,ICEMAX),VR3(NKR),VR4(NKR) &
-      &           ,VR5(NKR),PSINGLE &
-      &           ,AA1_MY,BB1_MY,AA2_MY,BB2_MY &
-      &           ,C1_MEY,C2_MEY &
-      &           ,COL,DTCOND,W_in,DX_in
 
- ! DROPLETS
-
-         REAL R1(NKR)&
-      &           ,RLEC(NKR),RO1BL(NKR) &
-      &           ,FI1(NKR),FF1(NKR),PSI1(NKR) &
-      &           ,B11_MY(NKR),B12_MY(NKR)
 
  ! CRYSTALS
 
- 	REAL R2(NKR,ICEMAX) &
-      &           ,RIEC(NKR,ICEMAX) &
-      &           ,RO2BL(NKR,ICEMAX) &
-      &           ,FI2(NKR,ICEMAX),PSI2(NKR,ICEMAX) &
-      &           ,FF2(NKR,ICEMAX) &
-      &           ,B21_MY(NKR,ICEMAX),B22_MY(NKR,ICEMAX) &
-      &           ,RATE2(NKR,ICEMAX),DEL_R2M(NKR,ICEMAX)
 
  ! SNOW
-         REAL R3(NKR) &
-      &           ,RSEC(NKR),RO3BL(NKR) &
-      &           ,FI3(NKR),FF3(NKR),PSI3(NKR) &
-      &           ,B31_MY(NKR),B32_MY(NKR) &
-      &           ,DEL_R3M(NKR)
-
- ! GRAUPELS
-
-         REAL R4(NKR) &
-      &           ,RGEC(NKR),RO4BL(NKR) &
-      &           ,FI4(NKR),FF4(NKR),PSI4(NKR) &
-      &           ,B41_MY(NKR),B42_MY(NKR) &
-      &           ,DEL_R4M(NKR)
-
- ! HAIL
-         REAL R5(NKR) &
-      &           ,RHEC(NKR),RO5BL(NKR) &
-      &           ,FI5(NKR),FF5(NKR),PSI5(NKR) &
-      &           ,B51_MY(NKR),B52_MY(NKR) &
-      &           ,DEL_R5M(NKR)
 
        DOUBLE PRECISION DD1N,DB11_MY,DAL1,DAL2
        DOUBLE PRECISION COL3,RORI,TPN,TPS,QPN,QPS,TOLD,QOLD &
@@ -6700,8 +7710,7 @@ enddo
       &                  ,FI1R1,FI2R2,FI3R3,FI4R4,FI5R5 &
       &                  ,RMASSLAA,RMASSLBB,RMASSIAA,RMASSIBB &
       &                  ,ES1N,ES2N,EW1N,ARGEXP &
-      &                  ,TT,QQ,PP,DEL1N0,DEL2N0 &
-      &                  ,DEL1N,DEL2N,DIV1,DIV2 &
+      &                  ,DEL1N0,DEL2N0 &
       &                  ,OPER2,OPER3,AR1,AR2
 
         DOUBLE PRECISION DELTAQ1,DELMASSI1,DELMASSL1
@@ -6711,60 +7720,178 @@ enddo
       &      /2.53,5.42,3.41E1,6.13/
         REAL B8L,B8I,SFN11,SFN12,SFNL,SFNI
         REAL B5L,B5I,B7L,B7I,B6,DOPL,DEL1S,DEL2S,DOPI,RW,QW,PW, &
-      &  RI,PI,QI,SFNI1(ICEMAX),SFNI2(ICEMAX),AL1,AL2
+      &  RI,PI,QI,AL1,AL2
         REAL D1N,D2N,DT0L, DT0I,D1N0,D2N0
         REAL SFN21,SFN22,SFNII1,SFNII2,SFN31,SFN32,SFN41,SFN42,SFN51, &
       &  SFN52
         REAL DEL1,DEL2
         REAL  TIMEREV,DT,DTT,TIMENEW
-        REAL DTIMEG(NKR),DTIMEH(NKR),totccn_before,totccn_after
+        REAL totccn_before,totccn_after
 
-        REAL DEL2D(ICEMAX),DTIMEO(NKR),DTIMEL(NKR) &
-      &           ,DTIMEI_1(NKR),DTIMEI_2(NKR),DTIMEI_3(NKR)
         REAL DT_WATER_COND,DT_WATER_EVAP,DT_ICE_COND,DT_ICE_EVAP, &
       &  DT_MIX_COND,DT_MIX_EVAP,DT_MIX_BERGERON,DT_MIX_ANTIBERGERON
         REAL DTNEWL0,DTNEWL1,DTNEWI1,DTNEWI2_1,DTNEWI2_2,DTNEWI2_3, &
       & DTNEWI2,DTNEWI_1,DTNEWI_2,DTNEWI3,DTNEWI4,DTNEWI5, &
       & DTNEWL,DTNEWL2,DTNEWG1,DTNEWH1
-        REAL TIMESTEPD(NKR)
 
         DATA AL1 /2500./, AL2 /2834./
         REAL EPSDEL,EPSDEL2
         DATA EPSDEL, EPSDEL2 /0.1E-03,0.1E-03/
 
- 	   REAL :: FL1(NKR), FL2(NKR,ICEMAX), FL3(NKR), FL4(NKR), FL5(NKR), SFNDUMMY(3), &
- 	   		   R1N(NKR), R2N(NKR,ICEMAX), R3N(NKR), R4N(NKR), R5N(NKR)
  	   INTEGER :: IDROP, ICM, ISYMICE
- 	   DOUBLE PRECISION :: R1D(NKR),R2D(NKR,ICEMAX),R3D(NKR), R4D(NKR), R5D(NKR), &
- 			       R1ND(NKR),R2ND(NKR,ICEMAX),R3ND(NKR), R4ND(NKR), R5ND(NKR)
 
 
  	   DATA DT0L, DT0I /1.E20,1.E20/
 
  	   DOUBLE PRECISION :: DEL1_d, DEL2_d , RW_d, PW_d , RI_d , PI_d , D1N_d, D2N_d, &
- 				VR1_d(NKR), VR2_d(NKR,ICEMAX), VR3_d(NKR), VR4_d(NKR), VR5_d(NKR), &
  				TTinput,QQinput,DEL1Ninput,DEL2Ninput
 
         OPER2(AR1)=0.622/(0.622+0.378*AR1)/AR1
         OPER3(AR1,AR2)=AR1*AR2/(0.622+0.378*AR1)
 
 
+        !$omp declare target
 
+!        [[[cog
+!           from wrf_cog import *
+!           write_subroutine("onecond3.csv")
+!        ]]]
+       REAL, pointer :: FI1(:)
+       real, pointer :: B11_MY(:)
+       real, pointer :: B12_MY(:)
+       REAL, pointer :: FI2(:,:)
+       real, pointer :: B21_MY(:,:)
+       real, pointer :: B22_MY(:,:)
+       real, pointer :: RATE2(:,:)
+       real, pointer :: DEL_R2M(:,:)
+       REAL, pointer :: FI3(:)
+       real, pointer :: B31_MY(:)
+       real, pointer :: B32_MY(:)
+       real, pointer :: DEL_R3M(:)
+       REAL, pointer :: FI4(:)
+       real, pointer :: B41_MY(:)
+       real, pointer :: B42_MY(:)
+       real, pointer :: DEL_R4M(:)
+       REAL, pointer :: FI5(:)
+       real, pointer :: B51_MY(:)
+       real, pointer :: B52_MY(:)
+       real, pointer :: DEL_R5M(:)
+       real, pointer :: SFNI1(:)
+       real, pointer :: SFNI2(:)
+       REAL, pointer :: DTIMEG(:)
+       real, pointer :: DTIMEH(:)
+       REAL, pointer :: DEL2D(:)
+       real, pointer :: DTIMEO(:)
+       real, pointer :: DTIMEL(:)
+       real, pointer :: DTIMEI_1(:)
+       real, pointer :: DTIMEI_2(:)
+       real, pointer :: DTIMEI_3(:)
+       REAL, pointer :: TIMESTEPD(:)
+       REAL, pointer :: FL1(:)
+       real, pointer :: FL2(:,:)
+       real, pointer :: FL3(:)
+       real, pointer :: FL4(:)
+       real, pointer :: FL5(:)
+       real, pointer :: SFNDUMMY(:)
+       real, pointer :: R1N(:)
+       real, pointer :: R2N(:,:)
+       real, pointer :: R3N(:)
+       real, pointer :: R4N(:)
+       real, pointer :: R5N(:)
+       real(8), pointer :: R1D(:)
+       real(8), pointer :: R2D(:,:)
+       real(8), pointer :: R3D(:)
+       real(8), pointer :: R4D(:)
+       real(8), pointer :: R5D(:)
+       real(8), pointer :: R1ND(:)
+       real(8), pointer :: R2ND(:,:)
+       real(8), pointer :: R3ND(:)
+       real(8), pointer :: R4ND(:)
+       real(8), pointer :: R5ND(:)
+       real(8), pointer :: VR1_d(:)
+       real(8), pointer :: VR2_d(:,:)
+       real(8), pointer :: VR3_d(:)
+       real(8), pointer :: VR4_d(:)
+       real(8), pointer :: VR5_d(:)
+       real(4), pointer :: fr_lim(:)
+       real(4), pointer :: frh_lim(:)
+
+
+       FI1 => FI1_temp(:,Iin,Kin,Jin)
+       B11_MY => B11_MY_temp(:,Iin,Kin,Jin)
+       B12_MY => B12_MY_temp(:,Iin,Kin,Jin)
+       FI2 => FI2_temp(:,:,Iin,Kin,Jin)
+       B21_MY => B21_MY_temp(:,:,Iin,Kin,Jin)
+       B22_MY => B22_MY_temp(:,:,Iin,Kin,Jin)
+       RATE2 => RATE2_temp(:,:,Iin,Kin,Jin)
+       DEL_R2M => DEL_R2M_temp(:,:,Iin,Kin,Jin)
+       FI3 => FI3_temp(:,Iin,Kin,Jin)
+       B31_MY => B31_MY_temp(:,Iin,Kin,Jin)
+       B32_MY => B32_MY_temp(:,Iin,Kin,Jin)
+       DEL_R3M => DEL_R3M_temp(:,Iin,Kin,Jin)
+       FI4 => FI4_temp(:,Iin,Kin,Jin)
+       B41_MY => B41_MY_temp(:,Iin,Kin,Jin)
+       B42_MY => B42_MY_temp(:,Iin,Kin,Jin)
+       DEL_R4M => DEL_R4M_temp(:,Iin,Kin,Jin)
+       FI5 => FI5_temp(:,Iin,Kin,Jin)
+       B51_MY => B51_MY_temp(:,Iin,Kin,Jin)
+       B52_MY => B52_MY_temp(:,Iin,Kin,Jin)
+       DEL_R5M => DEL_R5M_temp(:,Iin,Kin,Jin)
+       SFNI1 => SFNI1_temp(:,Iin,Kin,Jin)
+       SFNI2 => SFNI2_temp(:,Iin,Kin,Jin)
+       DTIMEG => DTIMEG_temp(:,Iin,Kin,Jin)
+       DTIMEH => DTIMEH_temp(:,Iin,Kin,Jin)
+       DEL2D => DEL2D_temp(:,Iin,Kin,Jin)
+       DTIMEO => DTIMEO_temp(:,Iin,Kin,Jin)
+       DTIMEL => DTIMEL_temp(:,Iin,Kin,Jin)
+       DTIMEI_1 => DTIMEI_1_temp(:,Iin,Kin,Jin)
+       DTIMEI_2 => DTIMEI_2_temp(:,Iin,Kin,Jin)
+       DTIMEI_3 => DTIMEI_3_temp(:,Iin,Kin,Jin)
+       TIMESTEPD => TIMESTEPD_temp(:,Iin,Kin,Jin)
+       FL1 => FL1_temp(:,Iin,Kin,Jin)
+       FL2 => FL2_temp(:,:,Iin,Kin,Jin)
+       FL3 => FL3_temp(:,Iin,Kin,Jin)
+       FL4 => FL4_temp(:,Iin,Kin,Jin)
+       FL5 => FL5_temp(:,Iin,Kin,Jin)
+       SFNDUMMY => SFNDUMMY_temp(:,Iin,Kin,Jin)
+       R1N => R1N_temp(:,Iin,Kin,Jin)
+       R2N => R2N_temp(:,:,Iin,Kin,Jin)
+       R3N => R3N_temp(:,Iin,Kin,Jin)
+       R4N => R4N_temp(:,Iin,Kin,Jin)
+       R5N => R5N_temp(:,Iin,Kin,Jin)
+       R1D => R1D_temp(:,Iin,Kin,Jin)
+       R2D => R2D_temp(:,:,Iin,Kin,Jin)
+       R3D => R3D_temp(:,Iin,Kin,Jin)
+       R4D => R4D_temp(:,Iin,Kin,Jin)
+       R5D => R5D_temp(:,Iin,Kin,Jin)
+       R1ND => R1ND_temp(:,Iin,Kin,Jin)
+       R2ND => R2ND_temp(:,:,Iin,Kin,Jin)
+       R3ND => R3ND_temp(:,Iin,Kin,Jin)
+       R4ND => R4ND_temp(:,Iin,Kin,Jin)
+       R5ND => R5ND_temp(:,Iin,Kin,Jin)
+       VR1_d => VR1_d_temp(:,Iin,Kin,Jin)
+       VR2_d => VR2_d_temp(:,:,Iin,Kin,Jin)
+       VR3_d => VR3_d_temp(:,Iin,Kin,Jin)
+       VR4_d => VR4_d_temp(:,Iin,Kin,Jin)
+       VR5_d => VR5_d_temp(:,Iin,Kin,Jin)
+       fr_lim => fr_lim_temp(:,Iin,Kin,Jin)
+       frh_lim => frh_lim_temp(:,Iin,Kin,Jin)
+!        [[[end]]]
  TTinput = TT
  QQinput = QQ
  DEL1Ninput = DEL1N
  DEL2Ninput = DEL2N
 
- B12_MY = 0.0
- B22_MY = 0.0
- B32_MY = 0.0
- B42_MY = 0.0
- B52_MY = 0.0
-
- B21_MY = 0.0
- B31_MY = 0.0
- B41_MY = 0.0
- B51_MY = 0.0
+! B12_MY = 0.0
+! B22_MY = 0.0
+! B32_MY = 0.0
+! B42_MY = 0.0
+! B52_MY = 0.0
+!
+! B21_MY = 0.0
+! B31_MY = 0.0
+! B41_MY = 0.0
+! B51_MY = 0.0
 
  ICM = ICEMAX
  R1D = R1
@@ -6784,8 +7911,8 @@ enddo
  VR4_d = VR4
  VR5_d = VR5
 
- SFN11 = 0.0
- SFNI1 = 0.0
+ !SFN11 = 0.0
+ !SFNI1 = 0.0
  SFN31 = 0.0
  SFN41 = 0.0
  SFN51 = 0.0
@@ -6844,7 +7971,7 @@ enddo
  IF(ISYM1 == 1)THEN
   FL1 = 0.0
  	CALL JERRATE_KS &
-      	 	(R1D,TPS,PP,VR1_d,RLEC,RO1BL,B11_MY,1,1,fl1,NKR,ICEMAX)
+      	 	(R1D,TPS,PP,VR1_d,RLEC,RO1BL,B11_MY,1,1,fl1,NKR,ICEMAX,Iin,Kin,Jin)
 
  	sfndummy(1) = SFN11
  	CALL JERTIMESC_KS(FI1,R1D,SFNDUMMY,B11_MY,B8L,1,NKR,ICEMAX,COL)
@@ -6854,13 +7981,13 @@ enddo
  IF(sum(ISYM2) > 0) THEN
  		FL1 = 0.0
  		! ... ice crystals
-   	CALL JERRATE_KS (R2D,TPS,PP,VR2_d,RIEC,RO2BL,B21_MY,3,2,fl1,NKR,ICEMAX)
+   	CALL JERRATE_KS (R2D,TPS,PP,VR2_d,RIEC,RO2BL,B21_MY,3,2,fl1,NKR,ICEMAX,Iin,Kin,Jin)
    	CALL JERTIMESC_KS (FI2,R2D,SFNI1,B21_MY,B8I,ICM,NKR,ICEMAX,COL)
  ENDIF
  IF(ISYM3 == 1) THEN
  		FL3 = 0.0
  		! ... snow
- 		CALL JERRATE_KS (R3D,TPS,PP,VR3_d,RSEC,RO3BL,B31_MY,1,3,fl3,NKR,ICEMAX)
+ 		CALL JERRATE_KS (R3D,TPS,PP,VR3_d,RSEC,RO3BL,B31_MY,1,3,fl3,NKR,ICEMAX,Iin,Kin,Jin)
  		sfndummy(1) = SFN31
  		CALL JERTIMESC_KS(FI3,R3D,SFNDUMMY,B31_MY,B8I,1,NKR,ICEMAX,COL)
    	SFN31 = sfndummy(1)
@@ -6868,7 +7995,7 @@ enddo
  IF(ISYM4 == 1) THEN
  		FL4 = 0.0
  		! ... graupel
- 		CALL JERRATE_KS(R4D,TPS,PP,VR4_d,RGEC,RO4BL,B41_MY,1,2,fl4,NKR,ICEMAX)
+ 		CALL JERRATE_KS(R4D,TPS,PP,VR4_d,RGEC,RO4BL,B41_MY,1,2,fl4,NKR,ICEMAX,Iin,Kin,Jin)
  		sfndummy(1) = SFN41
  		CALL JERTIMESC_KS(FI4,R4D,SFNDUMMY,B41_MY,B8I,1,NKR,ICEMAX,COL)
  		SFN41 = sfndummy(1)
@@ -6876,7 +8003,7 @@ enddo
  IF(ISYM5 == 1) THEN
  		FL5 = 0.0
  		! ... hail
- 		CALL JERRATE_KS(R5D,TPS,PP,VR5_d,RHEC,RO5BL,B51_MY,1,2,fl5,NKR,ICEMAX)
+ 		CALL JERRATE_KS(R5D,TPS,PP,VR5_d,RHEC,RO5BL,B51_MY,1,2,fl5,NKR,ICEMAX,Iin,Kin,Jin)
  		sfndummy(1) = SFN51
  		CALL JERTIMESC_KS(FI5,R5D,SFNDUMMY,B51_MY,B8I,1,NKR,ICEMAX,COL)
  		SFN51 = sfndummy(1)
@@ -6903,8 +8030,10 @@ enddo
  	QI=B7I*DOPI
 
  	IF(RW.NE.RW .or. PW.NE.PW)THEN
+#ifndef OFFLOAD
  	  print*, 'NaN In ONECOND3'
  	  call wrf_error_fatal("fatal error in ONECOND3 (RW or PW are NaN), model stop")
+#endif
  	ENDIF
 
  	! DEL1 > 0, DEL2 < 0    (ANTIBERGERON MIXED PHASE - KCOND=50)
@@ -6924,8 +8053,10 @@ enddo
     DTT = DTNEWL
 
  		! ... Incase the Anti-Bregeron regime we do not call diffusional-growth
+#ifndef OFFLOAD
  		PRINT*, "Anti-Bregeron Regime, No DIFFU"
  		PRINT*,  DEL1, DEL2, TT, QQ, Kin
+#endif
  		GO TO 17
  	  ! IN CASE : KCOND = 50
   ENDIF
@@ -6960,7 +8091,9 @@ enddo
  	! IN CASE : KCOND = 32
  	ENDIF
 
+#ifndef OFFLOAD
    IF (DTT < 0.0) call wrf_error_fatal("fatal error in ONECOND3:(DTT<0), model stop")
+#endif
 
  	DEL1_d = DEL1
  	DEL2_d = DEL2
@@ -7115,6 +8248,7 @@ enddo
  	TPN = TPS + DAL1*DELMASSL1+DAL2*DELMASSI1
 
  	IF(ABS(DAL1*DELMASSL1+DAL2*DELMASSI1) > 5.0 )THEN
+#ifndef OFFLOAD
  		print*,"ONECOND3-input-start"
  		print*,"TTinput",TTinput,"QQinput",QQinput,"PP",PP
  		print*,'DEL1Ninput',DEL1Ninput,'DEL2Ninput',DEL2Ninput
@@ -7152,6 +8286,7 @@ enddo
  		IF(ABS(DAL1*DELMASSL1+DAL2*DELMASSI1) > 5.0 )THEN
  			call wrf_error_fatal("fatal error in ONECOND3-out (ABS(DAL1*DELMASSL1+DAL2*DELMASSI1) > 5.0), model stop")
  		ENDIF
+#endif
  	ENDIF
   
  	! END OF TIME SPLITTING
