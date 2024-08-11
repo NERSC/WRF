@@ -70,6 +70,8 @@ if [[ $use_gpu -eq 0 ]]; then
   (( c = (128 / (n / SLURM_JOB_NUM_NODES)) * 2 ))
   srun -n $n -c $c --cpu-bind=cores /global/common/software/m4232/pm/v4.5.2/wrf.exe
 else
+  export NV_ACC_CUDA_STACKSIZE=65536
+  export NV_ACC_CUDA_HEAPSIZE=64MB
   (( c = (64 / (n / SLURM_JOB_NUM_NODES)) * 2 ))
 # srun -n $n -c $c --cpu-bind=cores --gpus-per-task=1 --gpu-bind=none /global/common/software/m4232/pm/v4.5.2/wrf.exe
   srun -n $n -c $c --cpu-bind=cores --gpus-per-task=1                 /global/common/software/m4232/pm/v4.5.2/wrf.exe
