@@ -2,6 +2,8 @@
 ! *** add new modules of schemes here
 !
 MODULE module_microphysics_driver
+      use mpi
+      double precision :: t1
   real, private, parameter :: QX_MIN = 1.E-12
   real, private, parameter :: NI_MIN = 1.E-6
 CONTAINS
@@ -1050,6 +1052,8 @@ REAL, DIMENSION( ims:ime, kms:kme, jms:jme ),                        &
                  qi_b4mp(its:ite,kts:kte,jts:jte) = qi_curr(its:ite,kts:kte,jts:jte)
                  qs_b4mp(its:ite,kts:kte,jts:jte) = qs_curr(its:ite,kts:kte,jts:jte)
 #endif
+
+                 t1 = MPI_Wtime()
              CALL mp_gt_driver(                          &
                      QV=qv_curr,                         &
                      QC=qc_curr,                         &
@@ -1101,6 +1105,8 @@ REAL, DIMENSION( ims:ime, kms:kme, jms:jme ),                        &
                  IMS=ims,IME=ime, JMS=jms,JME=jme, KMS=kms,KME=kme, &
                  ITS=its,ITE=ite, JTS=jts,JTE=jte, KTS=kts,KTE=kte)
 
+                 print *, 'Thompson 1 (s): ', MPI_Wtime() - t1
+
               if (pert_thom .and. multi_perturb == 1) then
                 call Remove_multi_perturb_mp_perturbations (perts_qvapor, perts_qcloud, perts_qice, &
                   perts_qsnow, perts_ni, pert_thom_qv, pert_thom_qc, pert_thom_qi, pert_thom_qs, &
@@ -1143,6 +1149,8 @@ REAL, DIMENSION( ims:ime, kms:kme, jms:jme ),                        &
                  qi_b4mp(its:ite,kts:kte,jts:jte) = qi_curr(its:ite,kts:kte,jts:jte)
                  qs_b4mp(its:ite,kts:kte,jts:jte) = qs_curr(its:ite,kts:kte,jts:jte)
 #endif
+
+                 t1 =  MPI_Wtime()
              CALL mp_gt_driver(                          &
                      QV=qv_curr,                         &
                      QC=qc_curr,                         &
@@ -1195,6 +1203,7 @@ REAL, DIMENSION( ims:ime, kms:kme, jms:jme ),                        &
                  IDS=ids,IDE=ide, JDS=jds,JDE=jde, KDS=kds,KDE=kde, &
                  IMS=ims,IME=ime, JMS=jms,JME=jme, KMS=kms,KME=kme, &
                  ITS=its,ITE=ite, JTS=jts,JTE=jte, KTS=kts,KTE=kte)
+                 print *, 'Thompson 2 (s): ', MPI_Wtime() - t1
              ELSE
                 CALL wrf_error_fatal ( 'arguments not present for calling thompson_et_al' )
              ENDIF
@@ -1227,6 +1236,7 @@ REAL, DIMENSION( ims:ime, kms:kme, jms:jme ),                        &
                   qs_tmp, qni_tmp, its, ite, jts, jte, ims, ime, jms, jme, kms, kme, kts, kte)
               end if
 
+              t1 = MPI_Wtime()
              CALL mp_gt_driver(                          &
                      QV=qv_curr,                         &
                      QC=qc_curr,                         &
@@ -1268,6 +1278,7 @@ REAL, DIMENSION( ims:ime, kms:kme, jms:jme ),                        &
                  IDS=ids,IDE=ide, JDS=jds,JDE=jde, KDS=kds,KDE=kde, &
                  IMS=ims,IME=ime, JMS=jms,JME=jme, KMS=kms,KME=kme, &
                  ITS=its,ITE=ite, JTS=jts,JTE=jte, KTS=kts,KTE=kte)
+                 print *, 'Thompson 3 (s): ', MPI_Wtime() - t1
 
               if (pert_thom .and. multi_perturb == 1) then
                 call Remove_multi_perturb_mp_perturbations (perts_qvapor, perts_qcloud, perts_qice, & 

@@ -46,6 +46,7 @@
 
 
       MODULE module_mp_thompson
+      use mpi
 
       USE module_wrf_error
       USE module_mp_radar
@@ -55,6 +56,8 @@
       USE module_model_constants, only : RE_QC_BG, RE_QI_BG, RE_QS_BG
 
       IMPLICIT NONE
+
+      double precision :: t1
 
       LOGICAL, PARAMETER, PRIVATE:: iiwarm = .false.
       LOGICAL, PRIVATE:: is_aerosol_aware = .false.
