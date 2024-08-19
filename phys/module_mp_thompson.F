@@ -5383,7 +5383,7 @@
 ! THIS FUNCTION CALCULATES THE LIQUID SATURATION VAPOR MIXING RATIO AS
 ! A FUNCTION OF TEMPERATURE AND PRESSURE
 !
-      REAL FUNCTION RSLF(P,T)
+      pure REAL FUNCTION RSLF(P,T)
 
       IMPLICIT NONE
       REAL, INTENT(IN):: P, T
@@ -5418,7 +5418,7 @@
 ! THIS FUNCTION CALCULATES THE ICE SATURATION VAPOR MIXING RATIO AS A
 ! FUNCTION OF TEMPERATURE AND PRESSURE
 !
-      REAL FUNCTION RSIF(P,T)
+      pure REAL FUNCTION RSIF(P,T)
 
       IMPLICIT NONE
       REAL, INTENT(IN):: P, T
@@ -5551,7 +5551,7 @@
 !+---+-----------------------------------------------------------------+
 !.. Helper routine for Phillips et al (2008) ice nucleation.  Trude
 
-      REAL FUNCTION delta_p (yy, y1, y2, aa, bb)
+      pure REAL FUNCTION delta_p (yy, y1, y2, aa, bb)
       IMPLICIT NONE
 
       REAL, INTENT(IN):: yy, y1, y2, aa, bb
@@ -6111,7 +6111,7 @@
 !
 !+---+-----------------------------------------------------------------+
 !
-      real function theta_wetb(thetae_K)
+      pure real function theta_wetb(thetae_K)
 !..
 !..              Eqn below was gotten from polynomial fit to data in
 !..              Smithsonian Meteorological Tables showing Theta-e
@@ -6119,7 +6119,7 @@
 !..
       IMPLICIT NONE
 
-      real:: thetae_K
+      real, intent(in) :: thetae_K
       real:: x, answer
 
 !+---+
