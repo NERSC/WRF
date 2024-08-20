@@ -1349,7 +1349,8 @@
             enddo
          endif
 
-         do k = kts, kte
+         ! Save the current temp arrays
+         do k = kts,kte
             qv(i,k,j) = qv1d(k)
             qc(i,k,j) = qc1d(k)
             qi(i,k,j) = qi1d(k)
@@ -1360,9 +1361,34 @@
             nr(i,k,j) = nr1d(k)
             th(i,k,j) = t1d(k)/pii(i,k,j)
 #if ( WRF_CHEM == 1 )
+            IF ( wetscav_on ) THEN
+               rainprod(i,k,j) = rainprod1d(k)
+               evapprod(i,k,j) = evapprod1d(k)
+            ENDIF
+#endif
+
+         enddo
+      enddo i_loop
+      enddo j_loop
+
+
+      ! serial loops
+      do j = j_start, j_end
+        do i = i_start, i_end
+         do k = kts, kte
+            qv1d(k)            =  qv(i,k,j)
+            qc1d(k)            =  qc(i,k,j)
+            qi1d(k)            =  qi(i,k,j)
+            qr1d(k)            =  qr(i,k,j)
+            qs1d(k)            =  qs(i,k,j)
+            qg1d(k)            =  qg(i,k,j)
+            ni1d(k)            =  ni(i,k,j)
+            nr1d(k)            =  nr(i,k,j)
+            t1d(k)  =  th(i,k,j)*pii(i,k,j)
+#if ( WRF_CHEM == 1 )
           IF ( wetscav_on ) THEN
-            rainprod(i,k,j) = rainprod1d(k)
-            evapprod(i,k,j) = evapprod1d(k)
+            rainprod1d(k) = rainprod(i,k,j)
+            evapprod1d(k) = evapprod(i,k,j)
           ENDIF
 #endif
             if (qc1d(k) .gt. qc_max) then
@@ -1481,8 +1507,8 @@
           enddo
          ENDIF
 
-      enddo i_loop
-      enddo j_loop
+      enddo
+      enddo
 
 ! DEBUG - GT
       write(mp_debug,'(a,7(a,e13.6,1x,a,i3,a,i3,a,i3,a,1x))') 'MP-GT:', &
