@@ -61,7 +61,7 @@ MODULE module_wrf_error
 ! message didn't already have one).
   integer, parameter :: min_allowed_buffer_size=200
 
-!$OMP THREADPRIVATE (wrf_err_message)
+!!$OMP THREADPRIVATE (wrf_err_message)
 CONTAINS
 
 ! ------------------------------------------------------------------------------

@@ -415,6 +415,21 @@
       REAL:: t1_qs_sd, t2_qs_sd, t1_qg_sd, t2_qg_sd
       REAL:: t1_qs_me, t2_qs_me, t1_qg_me, t2_qg_me
 
+      !$omp declare target(cgg,is_aerosol_aware,is_hail_aware,cse,oig1,ocg1,org2)
+      !$omp declare target(am_g,ccg,rho_g,csg,cig,ccg,crg,cre,nic2)
+      !$omp declare target(oge1,obmr,ogg3,obmi,ocg2,ogg2,oams,cce)
+      !$omp declare target(obmg,org3,cie,rho_s,dr,ogg1,oig2,nii2,cge,nii3,bv_g)
+      !$omp declare target(nir2,org1,nir3,av_g,ta_ww,ta_na,nis2,tnccn_act,nig2,nig3,ds)
+      !$omp declare target(niin2,d0i,sc3)
+      !$omp declare target(t_efrw,t_nc,nic1,t_efsw,tcr_sacr1,tmr_racs1,tcr_sacr2,tcs_racs1)
+      !$omp declare target(tmr_racs,tms_sacr1,tnr_sacr2,tpg_qrfz,tpi_qrfz,tnr_racs2,tnr_racs1)
+      !$omp declare target(tcr_gacr,tpi_qcfz,tmr_racg,tnr_gacr,tpi_ide,tps_iaus,tnr_qrfz,tnc_wev)
+      !$omp declare target(tni_iaus,tmr_racs2,tnr_sacr1,tcg_racg,tnr_racg,tni_qrfz,tni_qcfz)
+
+      !$omp declare target(t1_qr_qc, t1_qr_qi, t2_qr_qi, t1_qg_qc, t1_qs_qc, t1_qs_qi)
+      !$omp declare target(t1_qr_ev, t2_qr_ev, t1_qs_sd, t2_qs_sd, t1_qg_sd, t2_qg_sd)
+      !$omp declare target( t1_qs_me, t2_qs_me, t1_qg_me, t2_qg_me)
+
 !+---+
 !+---+-----------------------------------------------------------------+
 !..END DECLARATIONS
@@ -1550,6 +1565,7 @@
                           kts, kte, dt, ii, jj)
 
       implicit none
+      !$omp declare target
 
 !..Sub arguments
       INTEGER, OPTIONAL, INTENT(IN):: aer_init_opt, wif_input_opt
@@ -5475,6 +5491,7 @@
 !+---+-----------------------------------------------------------------+
       real function iceDeMott(tempc, qv, qvs, qvsi, rho, nifa)
       implicit none
+      !$omp declare target
 
       REAL, INTENT(IN):: tempc, qv, qvs, qvsi, rho, nifa
 
@@ -5549,6 +5566,7 @@
 
       real function iceKoop(temp, qv, qvs, naero, dt)
       implicit none
+      !$omp declare target
 
       REAL, INTENT(IN):: temp, qv, qvs, naero, DT
       REAL:: mu_diff, a_w_i, delta_aw, log_J_rate, J_rate, prob_h, satw
@@ -6068,6 +6086,7 @@
 !..            tlcl_K  = Temperature at Lifting Condensation Level (K)
 !..
       IMPLICIT NONE
+      !$omp declare target
 
       real:: pres_Pa, temp_K, w_non, tlcl_K
       real:: pp, tt, rr, tlc, power, xx, p1, p2
