@@ -422,7 +422,7 @@
       !$omp declare target(nir2,org1,nir3,av_g,ta_ww,ta_na,nis2,tnccn_act,nig2,nig3,ds)
       !$omp declare target(niin2,d0i,sc3)
       !$omp declare target(t_efrw,t_nc,nic1,t_efsw,tcr_sacr1,tmr_racs1,tcr_sacr2,tcs_racs1)
-      !$omp declare target(tmr_racs,tms_sacr1,tnr_sacr2,tpg_qrfz,tpi_qrfz,tnr_racs2,tnr_racs1)
+      !$omp declare target(tms_sacr1,tnr_sacr2,tpg_qrfz,tpi_qrfz,tnr_racs2,tnr_racs1)
       !$omp declare target(tcr_gacr,tpi_qcfz,tmr_racg,tnr_gacr,tpi_ide,tps_iaus,tnr_qrfz,tnc_wev)
       !$omp declare target(tni_iaus,tmr_racs2,tnr_sacr1,tcg_racg,tnr_racg,tni_qrfz,tni_qcfz)
 
@@ -1079,6 +1079,19 @@
 
       endif
 
+      !$omp target enter data map(alloc: cgg,is_aerosol_aware,is_hail_aware,cse,oig1,ocg1,org2)
+      !$omp target enter data map(alloc: am_g,ccg,rho_g,csg,cig,ccg,crg,cre,nic2)
+      !$omp target enter data map(alloc: oge1,obmr,ogg3,obmi,ocg2,ogg2,oams,cce)
+      !$omp target enter data map(alloc: obmg,org3,cie,rho_s,dr,ogg1,oig2,nii2,cge,nii3,bv_g)
+      !$omp target enter data map(alloc: nir2,org1,nir3,av_g,ta_ww,ta_na,nis2,tnccn_act,nig2,nig3,ds)
+      !$omp target enter data map(alloc: niin2,d0i,sc3)
+      !$omp target enter data map(alloc: t_efrw,t_nc,nic1,t_efsw,tcr_sacr1,tmr_racs1,tcr_sacr2,tcs_racs1)
+      !$omp target enter data map(alloc: tms_sacr1,tnr_sacr2,tpg_qrfz,tpi_qrfz,tnr_racs2,tnr_racs1)
+      !$omp target enter data map(alloc: tcr_gacr,tpi_qcfz,tmr_racg,tnr_gacr,tpi_ide,tps_iaus,tnr_qrfz,tnc_wev)
+      !$omp target enter data map(alloc: tni_iaus,tmr_racs2,tnr_sacr1,tcg_racg,tnr_racg,tni_qrfz,tni_qcfz)
+      !$omp target enter data map(alloc: t1_qr_qc, t1_qr_qi, t2_qr_qi, t1_qg_qc, t1_qs_qc, t1_qs_qi)
+      !$omp target enter data map(alloc: t1_qr_ev, t2_qr_ev, t1_qs_sd, t2_qs_sd, t1_qg_sd, t2_qg_sd)
+      !$omp target enter data map(alloc:  t1_qs_me, t2_qs_me, t1_qg_me, t2_qg_me)
       END SUBROUTINE thompson_init
 !+---+-----------------------------------------------------------------+
 !ctrlL
@@ -1220,6 +1233,22 @@
          CALL wrf_debug(0, mp_debug)
       endif
 
+      !$omp target update to( cgg,is_aerosol_aware,is_hail_aware,cse,oig1,ocg1,org2)
+      !$omp target update to( am_g,ccg,rho_g,csg,cig,ccg,crg,cre,nic2)
+      !$omp target update to( oge1,obmr,ogg3,obmi,ocg2,ogg2,oams,cce)
+      !$omp target update to( obmg,org3,cie,rho_s,dr,ogg1,oig2,nii2,cge,nii3,bv_g)
+      !$omp target update to( nir2,org1,nir3,av_g,ta_ww,ta_na,nis2,tnccn_act,nig2,nig3,ds)
+      !$omp target update to( niin2,d0i,sc3)
+      !$omp target update to( t_efrw,t_nc,nic1,t_efsw,tcr_sacr1,tmr_racs1,tcr_sacr2,tcs_racs1)
+      !$omp target update to( tms_sacr1,tnr_sacr2,tpg_qrfz,tpi_qrfz,tnr_racs2,tnr_racs1)
+      !$omp target update to( tcr_gacr,tpi_qcfz,tmr_racg,tnr_gacr,tpi_ide,tps_iaus,tnr_qrfz,tnc_wev)
+      !$omp target update to( tni_iaus,tmr_racs2,tnr_sacr1,tcg_racg,tnr_racg,tni_qrfz,tni_qcfz)
+      !$omp target update to( t1_qr_qc, t1_qr_qi, t2_qr_qi, t1_qg_qc, t1_qs_qc, t1_qs_qi)
+      !$omp target update to( t1_qr_ev, t2_qr_ev, t1_qs_sd, t2_qs_sd, t1_qg_sd, t2_qg_sd)
+      !$omp target update to(  t1_qs_me, t2_qs_me, t1_qg_me, t2_qg_me)
+
+      !$omp target teams num_teams(1)
+      !$omp distribute parallel do collapse(2)
       j_loop:  do j = j_start, j_end
       i_loop:  do i = i_start, i_end
 
@@ -1385,7 +1414,21 @@
          enddo
       enddo i_loop
       enddo j_loop
+      !$omp end target teams
 
+      !$omp target update from( cgg,is_aerosol_aware,is_hail_aware,cse,oig1,ocg1,org2)
+      !$omp target update from( am_g,ccg,rho_g,csg,cig,ccg,crg,cre,nic2)
+      !$omp target update from( oge1,obmr,ogg3,obmi,ocg2,ogg2,oams,cce)
+      !$omp target update from( obmg,org3,cie,rho_s,dr,ogg1,oig2,nii2,cge,nii3,bv_g)
+      !$omp target update from( nir2,org1,nir3,av_g,ta_ww,ta_na,nis2,tnccn_act,nig2,nig3,ds)
+      !$omp target update from( niin2,d0i,sc3)
+      !$omp target update from( t_efrw,t_nc,nic1,t_efsw,tcr_sacr1,tmr_racs1,tcr_sacr2,tcs_racs1)
+      !$omp target update from( tms_sacr1,tnr_sacr2,tpg_qrfz,tpi_qrfz,tnr_racs2,tnr_racs1)
+      !$omp target update from( tcr_gacr,tpi_qcfz,tmr_racg,tnr_gacr,tpi_ide,tps_iaus,tnr_qrfz,tnc_wev)
+      !$omp target update from( tni_iaus,tmr_racs2,tnr_sacr1,tcg_racg,tnr_racg,tni_qrfz,tni_qcfz)
+      !$omp target update from( t1_qr_qc, t1_qr_qi, t2_qr_qi, t1_qg_qc, t1_qs_qc, t1_qs_qi)
+      !$omp target update from( t1_qr_ev, t2_qr_ev, t1_qs_sd, t2_qs_sd, t1_qg_sd, t2_qg_sd)
+      !$omp target update from(  t1_qs_me, t2_qs_me, t1_qg_me, t2_qg_me)
 
       ! serial loops
       do j = j_start, j_end
@@ -5010,6 +5053,7 @@
       real function Eff_aero(D, Da, visc,rhoa,Temp,species)
 
       implicit none
+      !$omp declare target
       real:: D, Da, visc, rhoa, Temp
       character(LEN=1):: species
       real:: aval, Cc, diff, Re, Sc, St, St2, vt, Eff
@@ -5223,6 +5267,7 @@
       real function activ_ncloud(Tt, Ww, NCCN)
 
       implicit none
+      !$omp declare target
       REAL, INTENT(IN):: Tt, Ww, NCCN
       REAL:: n_local, w_local
       INTEGER:: i, j, k, l, m, n
@@ -5370,6 +5415,7 @@
       REAL FUNCTION GAMMLN(XX)
 !     --- RETURNS THE VALUE LN(GAMMA(XX)) FOR XX > 0.
       IMPLICIT NONE
+      !$omp declare target
       REAL, INTENT(IN):: XX
       DOUBLE PRECISION, PARAMETER:: STP = 2.5066282746310005D0
       DOUBLE PRECISION, DIMENSION(6), PARAMETER:: &
@@ -5397,6 +5443,7 @@
 !     --- SEE ABRAMOWITZ AND STEGUN 6.5.1
 !     --- USES GCF,GSER
       IMPLICIT NONE
+      !$omp declare target
       REAL, INTENT(IN):: A,X
       REAL:: GAMMCF,GAMSER,GLN
       GAMMP = 0.
@@ -5416,6 +5463,7 @@
       REAL FUNCTION WGAMMA(y)
 
       IMPLICIT NONE
+      !$omp declare target
       REAL, INTENT(IN):: y
 
       WGAMMA = EXP(GAMMLN(y))
@@ -5428,6 +5476,7 @@
       pure REAL FUNCTION RSLF(P,T)
 
       IMPLICIT NONE
+      !$omp declare target
       REAL, INTENT(IN):: P, T
       REAL:: ESL,X
       REAL, PARAMETER:: C0= .611583699E03
@@ -5463,6 +5512,7 @@
       pure REAL FUNCTION RSIF(P,T)
 
       IMPLICIT NONE
+      !$omp declare target
       REAL, INTENT(IN):: P, T
       REAL:: ESI,X
       REAL, PARAMETER:: C0= .609868993E03
@@ -5597,6 +5647,7 @@
 
       pure REAL FUNCTION delta_p (yy, y1, y2, aa, bb)
       IMPLICIT NONE
+      !$omp declare target
 
       REAL, INTENT(IN):: yy, y1, y2, aa, bb
       REAL:: dab, A, B, a0, a1, a2, a3
@@ -6119,6 +6170,7 @@
 !..            tdew_K  = Dewpoint T at Lifting Condensation Level (K)
 !..
       IMPLICIT NONE
+      !$omp declare target
 
       real:: temp_K, tdew_K
       real:: tt, tttd, denom
@@ -6140,6 +6192,7 @@
 !..            w_non   = mixing ratio (non-dimensional = kg/kg)
 !..
       IMPLICIT NONE
+      !$omp declare target
 
       real:: pres_Pa, w_non
       real:: p, RR, ES, ESLN
@@ -6163,6 +6216,7 @@
 !..              and Theta-w
 !..
       IMPLICIT NONE
+      !$omp declare target
 
       real, intent(in) :: thetae_K
       real:: x, answer
@@ -6205,6 +6259,7 @@
 !..            along moist adiabat described by theta-e.
 !..
       IMPLICIT NONE
+      !$omp declare target
 
       real:: thelcl_K, pres_Pa
       real:: guess, epsilon, w1, w2, tenu, tenup, cor, thwlcl_K
