@@ -1080,10 +1080,10 @@
       endif
 
       !$omp target enter data map(alloc: cgg,is_aerosol_aware,is_hail_aware,cse,oig1,ocg1,org2)
-      !$omp target enter data map(alloc: am_g,ccg,rho_g,csg,cig,ccg,crg,cre,nic2)
+      !$omp target enter data map(alloc: ccg,csg,cig,ccg,crg,cre,nic2)
       !$omp target enter data map(alloc: oge1,obmr,ogg3,obmi,ocg2,ogg2,oams,cce)
       !$omp target enter data map(alloc: obmg,org3,cie,rho_s,dr,ogg1,oig2,nii2,cge,nii3,bv_g)
-      !$omp target enter data map(alloc: nir2,org1,nir3,av_g,ta_ww,ta_na,nis2,tnccn_act,nig2,nig3,ds)
+      !$omp target enter data map(alloc: nir2,org1,nir3,av_g,nis2,tnccn_act,nig2,nig3,ds)
       !$omp target enter data map(alloc: niin2,d0i,sc3)
       !$omp target enter data map(alloc: t_efrw,t_nc,nic1,t_efsw,tcr_sacr1,tmr_racs1,tcr_sacr2,tcs_racs1)
       !$omp target enter data map(alloc: tms_sacr1,tnr_sacr2,tpg_qrfz,tpi_qrfz,tnr_racs2,tnr_racs1)
@@ -1234,10 +1234,10 @@
       endif
 
       !$omp target update to( cgg,is_aerosol_aware,is_hail_aware,cse,oig1,ocg1,org2)
-      !$omp target update to( am_g,ccg,rho_g,csg,cig,ccg,crg,cre,nic2)
+      !$omp target update to( ccg,csg,cig,ccg,crg,cre,nic2)
       !$omp target update to( oge1,obmr,ogg3,obmi,ocg2,ogg2,oams,cce)
       !$omp target update to( obmg,org3,cie,rho_s,dr,ogg1,oig2,nii2,cge,nii3,bv_g)
-      !$omp target update to( nir2,org1,nir3,av_g,ta_ww,ta_na,nis2,tnccn_act,nig2,nig3,ds)
+      !$omp target update to( nir2,org1,nir3,av_g,nis2,tnccn_act,nig2,nig3,ds)
       !$omp target update to( niin2,d0i,sc3)
       !$omp target update to( t_efrw,t_nc,nic1,t_efsw,tcr_sacr1,tmr_racs1,tcr_sacr2,tcs_racs1)
       !$omp target update to( tms_sacr1,tnr_sacr2,tpg_qrfz,tpi_qrfz,tnr_racs2,tnr_racs1)
@@ -1415,20 +1415,20 @@
       enddo i_loop
       enddo j_loop
       !$omp end target teams
+      !$omp target update to( cgg,is_aerosol_aware,is_hail_aware,cse,oig1,ocg1,org2)
+      !$omp target update to( ccg,csg,cig,ccg,crg,cre,nic2)
+      !$omp target update to( oge1,obmr,ogg3,obmi,ocg2,ogg2,oams,cce)
+      !$omp target update to( obmg,org3,cie,rho_s,dr,ogg1,oig2,nii2,cge,nii3,bv_g)
+      !$omp target update to( nir2,org1,nir3,av_g,nis2,tnccn_act,nig2,nig3,ds)
+      !$omp target update to( niin2,d0i,sc3)
+      !$omp target update to( t_efrw,t_nc,nic1,t_efsw,tcr_sacr1,tmr_racs1,tcr_sacr2,tcs_racs1)
+      !$omp target update to( tms_sacr1,tnr_sacr2,tpg_qrfz,tpi_qrfz,tnr_racs2,tnr_racs1)
+      !$omp target update to( tcr_gacr,tpi_qcfz,tmr_racg,tnr_gacr,tpi_ide,tps_iaus,tnr_qrfz,tnc_wev)
+      !$omp target update to( tni_iaus,tmr_racs2,tnr_sacr1,tcg_racg,tnr_racg,tni_qrfz,tni_qcfz)
+      !$omp target update to( t1_qr_qc, t1_qr_qi, t2_qr_qi, t1_qg_qc, t1_qs_qc, t1_qs_qi)
+      !$omp target update to( t1_qr_ev, t2_qr_ev, t1_qs_sd, t2_qs_sd, t1_qg_sd, t2_qg_sd)
+      !$omp target update to(  t1_qs_me, t2_qs_me, t1_qg_me, t2_qg_me)
 
-      !$omp target update from( cgg,is_aerosol_aware,is_hail_aware,cse,oig1,ocg1,org2)
-      !$omp target update from( am_g,ccg,rho_g,csg,cig,ccg,crg,cre,nic2)
-      !$omp target update from( oge1,obmr,ogg3,obmi,ocg2,ogg2,oams,cce)
-      !$omp target update from( obmg,org3,cie,rho_s,dr,ogg1,oig2,nii2,cge,nii3,bv_g)
-      !$omp target update from( nir2,org1,nir3,av_g,ta_ww,ta_na,nis2,tnccn_act,nig2,nig3,ds)
-      !$omp target update from( niin2,d0i,sc3)
-      !$omp target update from( t_efrw,t_nc,nic1,t_efsw,tcr_sacr1,tmr_racs1,tcr_sacr2,tcs_racs1)
-      !$omp target update from( tms_sacr1,tnr_sacr2,tpg_qrfz,tpi_qrfz,tnr_racs2,tnr_racs1)
-      !$omp target update from( tcr_gacr,tpi_qcfz,tmr_racg,tnr_gacr,tpi_ide,tps_iaus,tnr_qrfz,tnc_wev)
-      !$omp target update from( tni_iaus,tmr_racs2,tnr_sacr1,tcg_racg,tnr_racg,tni_qrfz,tni_qcfz)
-      !$omp target update from( t1_qr_qc, t1_qr_qi, t2_qr_qi, t1_qg_qc, t1_qs_qc, t1_qs_qi)
-      !$omp target update from( t1_qr_ev, t2_qr_ev, t1_qs_sd, t2_qs_sd, t1_qg_sd, t2_qg_sd)
-      !$omp target update from(  t1_qs_me, t2_qs_me, t1_qg_me, t2_qg_me)
 
       ! serial loops
       do j = j_start, j_end
